@@ -21,4 +21,5 @@ Bank management is a some type of sand-box repository to try a new technologies
 ## Branches
 
 * [BM-001: Create a new java and gradle project](https://github.com/meirlustig1983/bank-management/pull/1)
+* [BM-002: Spring Boot version update to the latest](https://github.com/meirlustig1983/bank-management/pull/2)
  
