@@ -15,4 +15,10 @@ Bank management is a some type of sand-box repository to try a new technologies
 * Junit
 * Git CI-CD
 * PostgreSQL
+
+
+
+## Branches
+
+* [BM-001: Create a new java and gradle project](https://github.com/meirlustig1983/bank-management/pull/1)
  
