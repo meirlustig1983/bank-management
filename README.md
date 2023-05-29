@@ -28,4 +28,5 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-006: Add controller (change the SpringBoot version back to 3.0.6)](https://github.com/meirlustig1983/bank-management/pull/6)
 * [BM-007: Add exceptions handler](https://github.com/meirlustig1983/bank-management/pull/7)
 * [BM-008: Add unit tests and IT for DataFacade](https://github.com/meirlustig1983/bank-management/pull/8)
+* [BM-009: Add unit tests and IT for BankAccountService](https://github.com/meirlustig1983/bank-management/pull/9)
  
