@@ -31,4 +31,4 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-009: Add unit tests and IT for BankAccountService](https://github.com/meirlustig1983/bank-management/pull/9)
 * [BM-010: Add unit tests for BankAccountMapper and TransactionMapper](https://github.com/meirlustig1983/bank-management/pull/10)
 * [BM-011: Add IT for BankAccountController](https://github.com/meirlustig1983/bank-management/pull/11)
- 
+* [BM-012: Add test suite](https://github.com/meirlustig1983/bank-management/pull/12)
