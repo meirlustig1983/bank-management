@@ -6,18 +6,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledOnJre;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.JRE;
-import org.junit.jupiter.api.condition.OS;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,32 +28,11 @@ public class BankAccountServiceIT {
     private BankAccountService service;
 
     @Test
-    @DisplayName("Test get info about bank account, if (OS is MAC) & (JRE is JAVA_17)")
-    @Timeout(value = 10000, unit = TimeUnit.MICROSECONDS)
-    @EnabledOnOs({OS.MAC})
-    @EnabledOnJre({JRE.JAVA_17})
+    @DisplayName("Test get info about bank account.")
     public void getAccountInfo_EnabledOnOsMAC_EnabledOnJre17() {
 
         Optional<BankAccountDto> result = service.getAccountInfo("theodore.roosevelt@gmail.com");
 
-        assertTrue(result.isPresent());
-        BankAccountDto bankAccountDto = result.get();
-
-        assumingThat(bankAccountDto.active(), () -> assertThat(bankAccountDto.balance()).isGreaterThan(bankAccountDto.minimumBalance()));
-        assertThat(bankAccountDto.accountId()).isEqualTo("theodore.roosevelt@gmail.com");
-        assertThat(bankAccountDto.firstName()).isEqualTo("Theodore");
-        assertThat(bankAccountDto.lastName()).isEqualTo("Roosevelt");
-        assertThat(bankAccountDto.balance().intValue()).isEqualTo(3500);
-        assertThat(bankAccountDto.minimumBalance().intValue()).isEqualTo(1500);
-    }
-
-    @Test
-    @DisplayName("Test get info about bank account, if (OS is LINUX)")
-    @Timeout(value = 10000, unit = TimeUnit.MICROSECONDS)
-    @EnabledOnOs({OS.LINUX})
-    public void getAccountInfo_EnabledOnOsLINUX() {
-
-        Optional<BankAccountDto> result = service.getAccountInfo("theodore.roosevelt@gmail.com");
         assertTrue(result.isPresent());
         BankAccountDto bankAccountDto = result.get();
 
