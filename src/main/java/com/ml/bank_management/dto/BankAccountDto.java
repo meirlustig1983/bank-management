@@ -12,7 +12,7 @@ public record BankAccountDto(
         @NonNull String lastName,
         @NonNull BigDecimal balance,
         @NonNull BigDecimal minimumBalance,
-        boolean active
-//        List<TransactionDto> transactions) {
-        ) {
+        boolean active,
+        List<TransactionDto> transactions) {
+
 }
