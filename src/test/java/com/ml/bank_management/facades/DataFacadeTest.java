@@ -2,7 +2,9 @@ package com.ml.bank_management.facades;
 
 import com.ml.bank_management.dao.BankAccount;
 import com.ml.bank_management.enums.BankAccountFields;
+import com.ml.bank_management.enums.TransactionType;
 import com.ml.bank_management.repositories.BankAccountRepository;
+import com.ml.bank_management.repositories.TransactionRepository;
 import com.ml.bank_management.utils.CustomDisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,10 @@ import static org.mockito.Mockito.*;
 public class DataFacadeTest {
 
     @Mock
-    private BankAccountRepository repository;
+    private BankAccountRepository bankAccountRepository;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     @InjectMocks
     private DataFacade dataFacade;
@@ -36,7 +41,7 @@ public class DataFacadeTest {
                 BigDecimal.valueOf(3500), BigDecimal.valueOf(1500));
         BankAccount bankAccount2 = createBankAccount(2L, "franklin.benjamin@gmail.com", "Franklin", "Benjamin",
                 BigDecimal.valueOf(0), BigDecimal.valueOf(-1000));
-        when(repository.findAll()).thenReturn(List.of(bankAccount1, bankAccount2));
+        when(bankAccountRepository.findAll()).thenReturn(List.of(bankAccount1, bankAccount2));
 
         // Act
         List<BankAccount> result = dataFacade.findAllBankAccounts();
@@ -46,8 +51,8 @@ public class DataFacadeTest {
         assertEquals(2, result.size());
         assertBankAccountEquals(bankAccount1, result.get(0));
         assertBankAccountEquals(bankAccount2, result.get(1));
-        verify(repository).findAll();
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findAll();
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
@@ -55,7 +60,7 @@ public class DataFacadeTest {
         // Arrange
         BankAccount bankAccount = createBankAccount(1L, "theodore.roosevelt@gmail.com", "Theodore", "Roosevelt",
                 BigDecimal.valueOf(3500), BigDecimal.valueOf(1500));
-        when(repository.findBankAccountByAccountId("theodore.roosevelt@gmail.com"))
+        when(bankAccountRepository.findBankAccountByAccountId("theodore.roosevelt@gmail.com"))
                 .thenReturn(Optional.of(bankAccount));
 
         // Act
@@ -64,22 +69,22 @@ public class DataFacadeTest {
         // Assert
         assertTrue(result.isPresent());
         assertBankAccountEquals(bankAccount, result.get());
-        verify(repository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
     public void findBankAccountByAccountId_NonExistingAccountId_ReturnsEmptyOptional() {
         // Arrange
-        when(repository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.empty());
+        when(bankAccountRepository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.empty());
 
         // Act
         Optional<BankAccount> result = dataFacade.findBankAccountByAccountId("theodore.roosevelt@gmail.com");
 
         // Assert
         assertFalse(result.isPresent());
-        verify(repository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
@@ -87,7 +92,7 @@ public class DataFacadeTest {
         // Arrange
         BankAccount bankAccount = createBankAccount(1L, "theodore.roosevelt@gmail.com", "Theodore", "Roosevelt",
                 BigDecimal.valueOf(3500), BigDecimal.valueOf(1500));
-        when(repository.save(bankAccount)).thenReturn(bankAccount);
+        when(bankAccountRepository.save(bankAccount)).thenReturn(bankAccount);
 
         // Act
         Optional<BankAccount> result = dataFacade.saveBankAccount(bankAccount);
@@ -95,8 +100,8 @@ public class DataFacadeTest {
         // Assert
         assertTrue(result.isPresent());
         assertBankAccountEquals(bankAccount, result.get());
-        verify(repository).save(bankAccount);
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).save(bankAccount);
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
@@ -107,8 +112,8 @@ public class DataFacadeTest {
         BankAccount updatedBankAccount = createBankAccount(1L, "theodore.roosevelt@gmail.com", "Meir", "Roth",
                 BigDecimal.valueOf(10000), BigDecimal.valueOf(0));
 
-        when(repository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.of(originalBankAccount));
-        when(repository.save(any(BankAccount.class))).thenReturn(updatedBankAccount);
+        when(bankAccountRepository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.of(originalBankAccount));
+        when(bankAccountRepository.save(any(BankAccount.class))).thenReturn(updatedBankAccount);
 
         // Act
         Optional<BankAccount> result = dataFacade.updateBankAccount("theodore.roosevelt@gmail.com",
@@ -116,21 +121,22 @@ public class DataFacadeTest {
                         Pair.of(BankAccountFields.FIRST_NAME, "Meir"),
                         Pair.of(BankAccountFields.LAST_NAME, "Roth"),
                         Pair.of(BankAccountFields.BALANCE, "10000"),
-                        Pair.of(BankAccountFields.MINIMUM_BALANCE, "0")
+                        Pair.of(BankAccountFields.MINIMUM_BALANCE, "0"),
+                        Pair.of(BankAccountFields.ACTIVE, "true")
                 ));
 
         // Assert
         assertTrue(result.isPresent());
         assertBankAccountEquals(updatedBankAccount, result.get());
-        verify(repository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
-        verify(repository).save(any(BankAccount.class));
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
+        verify(bankAccountRepository).save(any(BankAccount.class));
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
     public void updateBankAccount_NonExistingAccountId_ReturnsEmptyOptional() {
         // Arrange
-        when(repository.findBankAccountByAccountId("fake@gmail.com")).thenReturn(Optional.empty());
+        when(bankAccountRepository.findBankAccountByAccountId("fake@gmail.com")).thenReturn(Optional.empty());
 
         // Act
         Optional<BankAccount> result = dataFacade.updateBankAccount("fake@gmail.com",
@@ -138,8 +144,8 @@ public class DataFacadeTest {
 
         // Assert
         assertFalse(result.isPresent());
-        verify(repository).findBankAccountByAccountId("fake@gmail.com");
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findBankAccountByAccountId("fake@gmail.com");
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
@@ -147,7 +153,7 @@ public class DataFacadeTest {
         // Arrange
         BankAccount originalBankAccount = createBankAccount(1L, "theodore.roosevelt@gmail.com", "Theodore", "Roosevelt",
                 BigDecimal.valueOf(3500), BigDecimal.valueOf(1500));
-        when(repository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.of(originalBankAccount));
+        when(bankAccountRepository.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.of(originalBankAccount));
 
         // Act and Assert
         assertThrows(IllegalArgumentException.class, () -> dataFacade.updateBankAccount("theodore.roosevelt@gmail.com",
@@ -155,8 +161,8 @@ public class DataFacadeTest {
                         Pair.of(BankAccountFields.ID, "1000"),
                         Pair.of(BankAccountFields.BALANCE, "8500")
                 )));
-        verify(repository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     @Test
@@ -165,8 +171,36 @@ public class DataFacadeTest {
         dataFacade.deleteBankAccountByAccountId("theodore.roosevelt@gmail.com");
 
         // Assert
-        verify(repository).deleteByAccountId("theodore.roosevelt@gmail.com");
-        verifyNoMoreInteractions(repository);
+        verify(bankAccountRepository).deleteByAccountId("theodore.roosevelt@gmail.com");
+        verifyNoMoreInteractions(bankAccountRepository);
+    }
+
+    @Test
+    public void saveTransaction_ValidTransactionData_TransactionSaved() {
+        // Arrange
+        Long bankAccountId = 1L;
+        BigDecimal amount = BigDecimal.valueOf(100.00);
+        TransactionType type = TransactionType.DEPOSIT;
+
+        // Act
+        dataFacade.saveTransaction(bankAccountId, amount, type);
+
+        // Assert
+        verify(transactionRepository).save(any());
+        verifyNoMoreInteractions(transactionRepository, bankAccountRepository);
+    }
+
+    @Test
+    public void deleteBankAccountByAccountId_ValidAccountId_DeletesBankAccount() {
+        // Arrange
+        String accountId = "theodore.roosevelt@gmail.com";
+
+        // Act
+        dataFacade.deleteBankAccountByAccountId(accountId);
+
+        // Assert
+        verify(bankAccountRepository).deleteByAccountId(accountId);
+        verifyNoMoreInteractions(bankAccountRepository);
     }
 
     // Helper methods
