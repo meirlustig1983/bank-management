@@ -26,4 +26,5 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-004: Use facade design pattern in order to save and find data](https://github.com/meirlustig1983/bank-management/pull/4)
 * [BM-005: Add service as a middle layer between controller and DB](https://github.com/meirlustig1983/bank-management/pull/5)
 * [BM-006: Add controller (change the SpringBoot version back to 3.0.6)](https://github.com/meirlustig1983/bank-management/pull/6)
+* [BM-007: Add exceptions handler](https://github.com/meirlustig1983/bank-management/pull/7)
  
