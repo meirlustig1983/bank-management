@@ -22,7 +22,7 @@ public interface BankAccountMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-//    @Mapping(target = "transactions", ignore = true)
+    @Mapping(target = "transactions", ignore = true)
     BankAccount toDao(BankAccountDto bankAccountDto);
 
     default List<TransactionDto> mapTransactions(List<Transaction> transactions) {

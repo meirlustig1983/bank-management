@@ -49,8 +49,8 @@ public class BankAccount {
 
     private boolean active;
 
-//    @OneToMany(mappedBy = "bankAccountId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "bankAccountId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Transaction> transactions;
 
     @Builder.Default
     @Column(nullable = false)
