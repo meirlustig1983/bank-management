@@ -29,7 +29,7 @@ public class BankAccountServiceIT {
 
     @Test
     @DisplayName("Test get info about bank account.")
-    public void getAccountInfo_EnabledOnOsMAC_EnabledOnJre17() {
+    public void getAccountInfo() {
 
         Optional<BankAccountDto> result = service.getAccountInfo("theodore.roosevelt@gmail.com");
 
