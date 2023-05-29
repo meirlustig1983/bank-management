@@ -1,6 +1,9 @@
 package com.ml.bank_management.services;
 
 import com.ml.bank_management.dto.BankAccountDto;
+import com.ml.bank_management.dto.TransactionDto;
+import com.ml.bank_management.enums.TransactionType;
+import com.ml.bank_management.exceptions.InactiveAccountException;
 import com.ml.bank_management.exceptions.InsufficientFundsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -11,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -195,5 +202,15 @@ public class BankAccountServiceIT {
         assertThat(bankAccountDto.balance().intValue()).isEqualTo(3999);
         assertThat(bankAccountDto.minimumBalance().intValue()).isEqualTo(1500);
         assertThat(bankAccountDto.balance()).isGreaterThan(bankAccountDto.minimumBalance());
+    }
+
+    @Test
+    @DisplayName("Test delete a bank account.")
+    public void deleteBankAccountByAccountId() {
+        // Delete an existing bank account
+        service.deleteBankAccountByAccountId("theodore.roosevelt@gmail.com");
+
+        // Verify that the bank account is deleted by trying to retrieve it
+        assertThrows(EntityNotFoundException.class, () -> service.getAccountInfo("theodore.roosevelt@gmail.com"));
     }
 }

@@ -2,6 +2,7 @@ package com.ml.bank_management.facades;
 
 import com.ml.bank_management.dao.BankAccount;
 import com.ml.bank_management.enums.BankAccountFields;
+import com.ml.bank_management.enums.TransactionType;
 import com.ml.bank_management.utils.CustomDisplayNameGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -111,6 +112,11 @@ public class DataFacadeIT {
         assertTrue(result.get().isActive());
         assertInstanceOf(LocalDateTime.class, result.get().getCreatedAt());
         assertInstanceOf(LocalDateTime.class, result.get().getUpdatedAt());
+    }
+
+    @Test
+    public void saveTransaction() {
+        dataFacade.saveTransaction(1L, BigDecimal.valueOf(1000), TransactionType.DEPOSIT);
     }
 
     @Test
