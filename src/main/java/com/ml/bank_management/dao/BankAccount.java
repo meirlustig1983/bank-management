@@ -49,7 +49,7 @@ public class BankAccount {
 
     private boolean active;
 
-    @OneToMany(mappedBy = "bankAccountId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bankAccountId")
     private List<Transaction> transactions;
 
     @Builder.Default
