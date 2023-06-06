@@ -1,10 +1,12 @@
 FROM amazoncorretto:17.0.7-alpine
 
-COPY build/libs/bank-management-1.0.1.jar usr/app/bank-management-1.0.1.jar
+ARG VERSION
+
+COPY build/libs/bank-management-$VERSION.jar /usr/app/bank-management-$VERSION.jar
 
 WORKDIR /usr/app
 
-RUN sh -c 'touch bank-management-1.0.1.jar'
+RUN sh -c 'touch bank-management-$VERSION.jar'
 
 # Specify the command to run your application
-CMD ["java", "-jar", "bank-management-1.0.1.jar"]
+CMD ["java", "-jar", "bank-management-$VERSION.jar"]
