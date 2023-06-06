@@ -16,29 +16,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Install Docker Compose
-      run: sudo apt-get update && sudo apt-get install -y docker-compose
-    - name: Start Docker Compose
-      run: docker-compose up -d
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: build
-    - name: Stop Docker Compose
-      run: docker-compose down
-    - name: Docker login
-      run: docker login -u ${{ secrets.DOCKER_USER_NAME }} -p ${{ secrets.DOCKER_TOKEN }}
-    - name: Docker build and tag version 1.0.1
-      run: docker build . --file Dockerfile --tag mlustig/bank-management:1.0.1
-    - name: Docker push version 1.0.1
-      run: docker push mlustig/bank-management:1.0.1
-    - name: Docker build and tag latest
-      run: docker build . --file Dockerfile --tag mlustig/bank-management:latest
-    - name: Docker push latest version
-      run: docker push mlustig/bank-management:latest
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Install Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Start Docker Compose
+        run: docker-compose up -d
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: build
+      - name: Stop Docker Compose
+        run: docker-compose down
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USER_NAME }} -p ${{ secrets.DOCKER_TOKEN }}
+      - name: Get Gradle project version
+        id: get_version
+        run: echo "::set-output name=version::$(sed -nE "s/version = '([0-9]+\.[0-9]+\.[0-9]+)'/\1/p" build.gradle)"
+      - name: Docker build and tag
+        run: |
+          docker build -t mlustig/bank-management:${{ steps.get_version.outputs.version }} --build-arg VERSION=${{ steps.get_version.outputs.version }} .
+          docker push mlustig/bank-management:${{ steps.get_version.outputs.version }}
+          docker tag mlustig/bank-management:${{ steps.get_version.outputs.version }} mlustig/bank-management:latest
+          docker push mlustig/bank-management:latest
