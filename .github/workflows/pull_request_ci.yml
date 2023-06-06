@@ -19,8 +19,17 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Set Git identity
+      run: |
+        git config --global user.name "Meir Lustig"
+        git config --global user.email "meirlustig1983@gamil.com"
     - name: Increase version
       run: ./gradlew increaseVersion
+    - name: Commit and push changes
+      run: |
+        git add gradle.properties
+        git commit -m "Update version in gradle.properties"
+        git push origin HEAD:main
     - name: Set Version
       id: set_version
       run: echo "version=$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)" >> $GITHUB_ENV
