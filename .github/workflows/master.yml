@@ -26,6 +26,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Start Docker Compose
         run: docker-compose up -d
+      - name: Increase version
+        run: ./gradlew increaseVersion
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
