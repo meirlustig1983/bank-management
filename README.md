@@ -15,8 +15,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * Junit
 * Git CI-CD
 * PostgreSQL
-
-
+* Docker
 
 ## Branches
 
@@ -33,3 +32,20 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-011: Add IT for BankAccountController](https://github.com/meirlustig1983/bank-management/pull/11)
 * [BM-012: Add test suite](https://github.com/meirlustig1983/bank-management/pull/12)
 * [BM-013: Optimization tests coverage](https://github.com/meirlustig1983/bank-management/pull/13)
+* [BM-014: Add 'Docker' support](https://github.com/meirlustig1983/bank-management/pull/14)
+
+
+
+## Docker Compose Example
+
+      bank-management:
+        image: mlustig/bank-management:latest
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: postgres
+        ports:
+            - "8080:8080"
+        depends_on:
+            postgres:
+                condition: service_healthy
