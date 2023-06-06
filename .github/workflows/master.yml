@@ -1,10 +1,11 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    types:
+      - closed
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -31,3 +32,13 @@ jobs:
         arguments: build
     - name: Stop Docker Compose
       run: docker-compose down
+    - name: Docker login
+      run: docker login -u ${{ secrets.DOCKER_USER_NAME }} -p ${{ secrets.DOCKER_TOKEN }}
+    - name: Docker build and tag version 1.0.1
+      run: docker build . --file Dockerfile --tag mlustig/bank-management:1.0.1
+    - name: Docker push version 1.0.1
+      run: docker push mlustig/bank-management:1.0.1
+    - name: Docker build and tag latest
+      run: docker build . --file Dockerfile --tag mlustig/bank-management:latest
+    - name: Docker push latest version
+      run: docker push mlustig/bank-management:latest
