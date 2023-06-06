@@ -5,8 +5,21 @@ plugins {
 }
 
 group = 'com.mlustig'
-version = '1.0.6'
 sourceCompatibility = '17'
+def properties = new Properties()
+properties.load(new FileInputStream(file('gradle.properties')))
+def currentVersion = properties.getProperty('version', '1.0.6')
+version = currentVersion
+
+tasks.register('increaseVersion') {
+    doLast {
+        def newVersion = currentVersion.tokenize('.').collect { it.toInteger() }
+        newVersion[2]++
+        version = newVersion.join('.')
+        file('gradle.properties').text = "version=${version}"
+        println "Version increased to ${version}"
+    }
+}
 
 configurations {
     compileOnly {
