@@ -34,3 +34,5 @@ jobs:
         arguments: build
     - name: Stop Docker Compose
       run: docker-compose down
+    - name: Docker build and tag
+      run: docker build -t mlustig/bank-management:${{ env.version }} --build-arg VERSION=${{ env.version }} .
