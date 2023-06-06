@@ -21,7 +21,7 @@ jobs:
         distribution: 'temurin'
     - name: Set Version
       id: set_version
-      run: echo "version=$(sed -nE "s/version = '([0-9]+\.[0-9]+\.[0-9]+)'/\1/p" build.gradle)" >> $GITHUB_ENV
+      run: echo "version=$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)" >> $GITHUB_ENV
     - name: Use Version
       run: echo ${{ env.version }}
     - name: Install Docker Compose
