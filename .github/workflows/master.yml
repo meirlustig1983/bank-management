@@ -8,7 +8,8 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   setup:
@@ -23,9 +24,23 @@ jobs:
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
+  update_version:
+    runs-on: ubuntu-latest
+    needs: [ setup ]
+    steps:
+      - name: Create New Branch
+        run: |
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
+          git checkout main
+          git pull origin main
+          git checkout -b update-gradle-properties
+      - name: Change Project Version
+        run: ./gradlew increaseVersion
+
   build:
     runs-on: ubuntu-latest
-    needs: [update_version]
+    needs: [ update_version ]
     steps:
       - name: Start Docker Compose
         run: docker-compose up -d
