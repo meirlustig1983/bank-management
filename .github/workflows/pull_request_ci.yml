@@ -11,6 +11,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      workflow-complete: ${{ steps.complete.outputs.complete }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,3 +37,7 @@ jobs:
           git commit -m "Update gradle.properties"
           git pull origin main
           git push --force origin update-gradle-properties
+
+      - name: Set workflow complete
+        id: complete
+        run: echo "Workflow complete"
