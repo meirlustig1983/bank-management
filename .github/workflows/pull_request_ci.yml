@@ -38,9 +38,6 @@ jobs:
           git commit -m "Update gradle.properties"
           git pull origin main
           git push --force origin update-gradle-properties
-      - name: Set workflow complete
-        id: complete
-        run: echo "Build Is Completed"
 
   create-pull-request:
 
@@ -54,8 +51,3 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Set workflow complete
-        id: complete
-        run: echo "Pull Request Created"
-
-
