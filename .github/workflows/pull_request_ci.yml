@@ -40,6 +40,22 @@ jobs:
         id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-gradle-properties
+          branch: main
           title: BM-Update version properties file with the changes in gradle.properties file
-          body: This pull request updates the version properties file based on the changes made in the gradle.properties file.
+          body: |
+            This pull request updates the version properties file based on the changes made in the gradle.properties file.
+      - name: Merge the pull request to main
+        uses: actions/github-script@v4
+        if: ${{ steps.cpr.outputs.pull-request }}
+        with:
+          script: |
+            const pullRequest = context.payload.workflow_run.pull_requests[0];
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            octokit.pulls.merge({
+              owner: pullRequest.base.user.login,
+              repo: pullRequest.base.repo.name,
+              pull_number: pullRequest.number,
+              merge_method: 'squash'
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
