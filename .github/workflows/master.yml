@@ -37,8 +37,8 @@ jobs:
         run: echo "New content" >> file.txt
       - name: Commit and push changes
         run: |
-          git config --global user.name "Your Name"
-          git config --global user.email "your.email@example.com"
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
           git add file.txt
           git commit -m "Update file.txt"
           git push origin HEAD:main
