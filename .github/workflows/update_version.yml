@@ -10,8 +10,8 @@ on:
       - completed
 
 jobs:
-  update_version:
-    needs: ci
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
