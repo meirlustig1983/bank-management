@@ -46,16 +46,16 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
-            const base = 'main';
-            const head = 'update-gradle-properties';
-            const title = 'BM-Update version properties file with the changes in gradle.properties file';
-            const body = 'This pull request updates the version properties file based on the changes made in the gradle.properties file.';
+            const prBase = 'main';
+            const prHead = 'update-gradle-properties';
+            const prTitle = 'BM-Update version properties file with the changes in gradle.properties file';
+            const prBody = 'This pull request updates the version properties file based on the changes made in the gradle.properties file.';
 
             github.pulls.create({
               owner,
               repo,
-              title,
-              head,
-              base,
-              body
+              title: prTitle,
+              head: prHead,
+              base: prBase,
+              body: prBody
             });
