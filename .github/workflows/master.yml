@@ -35,9 +35,9 @@ jobs:
         run: |
           git config --global user.name "Meir Lustig"
           git config --global user.email "meirlustig1983@gmail.com"
-          git checkout -b update-gradle-properties main
+          git checkout -b update-gradle-properties
           ./gradlew increaseVersion
-          git add gradle.properties
+          git add .
           git commit -m "Update gradle.properties"
           git push origin update-gradle-properties
       - name: Create a pull request
