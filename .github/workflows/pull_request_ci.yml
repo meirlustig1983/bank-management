@@ -24,8 +24,7 @@ jobs:
           git config --global user.name "Meir Lustig"
           git config --global user.email "meirlustig1983@gmail.com"
           git fetch origin main
-          git branch -D update-gradle-properties || true
-          git checkout -b update-gradle-properties --track origin/main
+          git checkout -b update-gradle-properties main
       - name: Update Version
         run: ./gradlew increaseVersion
       - name: Commit and push changes
@@ -33,8 +32,7 @@ jobs:
           git config --global credential.helper store
           git add gradle.properties
           git commit -m "Update gradle.properties"
-          git pull origin main
-          git push --force origin update-gradle-properties
+          git push origin update-gradle-properties
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
