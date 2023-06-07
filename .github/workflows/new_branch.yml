@@ -1,0 +1,27 @@
+name: New Branch Workflow
+
+on:
+  create:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
+
+      - name: Run your desired actions
+        run: |
+          branch_name=$(git symbolic-ref --short HEAD)
+          echo "Branch Name: $branch_name"
+          
+          echo "Files:"
+          git ls-files
