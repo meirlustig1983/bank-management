@@ -38,10 +38,10 @@ jobs:
           arguments: increaseVersion build
       - name: Commit and push changes
         run: |
-          git fetch origin update-gradle-properties
-          git merge --allow-unrelated-histories origin/update-gradle-properties
           git add gradle.properties
           git commit -m "Update gradle.properties"
+          git fetch origin update-gradle-properties
+          git merge --allow-unrelated-histories origin/update-gradle-properties
           git push origin update-gradle-properties
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v3
