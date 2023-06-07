@@ -32,7 +32,7 @@ jobs:
         run: |
           git add gradle.properties
           git commit -m "Update gradle.properties"
-          git push origin update-gradle-properties
+          git push origin update-gradle-properties --token "${{ secrets.GITHUB_TOKEN }}"
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v3
         with:
