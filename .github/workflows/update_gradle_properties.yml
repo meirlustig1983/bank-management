@@ -1,33 +1,31 @@
 name: Update Gradle Properties
 
 on:
-  workflow_run:
-    workflows: [ "Pull Request CI" ]
-    types:
-      - completed
+  pull_request:
+    branches: [ "main" ]
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  create_pull_request:
+  build:
 
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'Create BM-update-gradle-properties pull request'
-          title: 'BM-update-gradle-properties'
-          branch: 'main'
-          base: 'update-gradle-properties'
-          draft: false
+#      - name: Create Pull Request
+#        id: create_pr
+#        uses: peter-evans/create-pull-request@v3
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          commit-message: 'Create BM-update-gradle-properties pull request'
+#          title: 'BM-update-gradle-properties'
+#          branch: 'main'
+#          base: 'update-gradle-properties'
+#          draft: false
 
 #  merge_pull_request:
 #    needs: create_pull_request
