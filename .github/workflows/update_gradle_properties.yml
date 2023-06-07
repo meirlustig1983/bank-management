@@ -1,0 +1,41 @@
+name: Update Gradle Properties
+
+on:
+  create:
+    branches:
+      - update-gradle-properties
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create_pull_request:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Create BM-update-gradle-properties pull request'
+          title: 'BM-update-gradle-properties'
+          branch: 'main'
+          base: 'update-gradle-properties'
+          draft: false
+
+#  merge_pull_request:
+#    needs: create_pull_request
+#    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Merge Pull Request
+#        run: git merge ${{ github.event.pull_request.head.ref }}
