@@ -43,4 +43,3 @@ jobs:
           title: BM-Update version properties file with the changes in gradle.properties file
           body: This pull request updates the version properties file based on the changes made in the gradle.properties file.
           base: main
-          branch-suffix: auto
