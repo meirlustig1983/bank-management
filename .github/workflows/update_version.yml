@@ -1,9 +1,6 @@
 name: Update Project Version
 
 on:
-  push:
-    branches:
-      - main
   workflow_run:
     workflows: [ "Main CI" ]
     types:
