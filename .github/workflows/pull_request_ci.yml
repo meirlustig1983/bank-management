@@ -45,7 +45,7 @@ jobs:
   create-pull-request:
 
     runs-on: ubuntu-latest
-    needs: [ build ]
+    needs: [ create-new-branch ]
 
     steps:
       - uses: actions/checkout@v3
