@@ -35,11 +35,11 @@ jobs:
           git commit -m "Update gradle.properties"
           git pull origin main
           git push --force origin update-gradle-properties
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-gradle-properties
-          title: BM-Update version properties file with the changes in gradle.properties file
-          body: This pull request updates the version properties file based on the changes made in the gradle.properties file.
-          base: main
+#      - name: Create Pull Request
+#        uses: peter-evans/create-pull-request@v3
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          branch: update-gradle-properties
+#          title: BM-Update version properties file with the changes in gradle.properties file
+#          body: This pull request updates the version properties file based on the changes made in the gradle.properties file.
+#          base: main
