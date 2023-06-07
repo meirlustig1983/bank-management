@@ -40,7 +40,6 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'Update gradle.properties'
           title: 'Update gradle.properties'
           body: 'This pull request updates the gradle.properties file.'
           branch: 'update-gradle-properties'
