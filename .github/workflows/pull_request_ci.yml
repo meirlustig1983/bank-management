@@ -5,7 +5,8 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   build:
@@ -25,13 +26,16 @@ jobs:
         git config --global user.email "meirlustig1983@gamil.com"
     - name: Increase version
       run: ./gradlew increaseVersion
-    - name: Commit and push changes
+    - name: Create new branch, make a change, commit, create pull request, and merge
       run: |
-        git add gradle.properties
-        git commit -m "Update version in gradle.properties"
-        git push origin HEAD:main
+        git checkout -b new-branch
+        echo "New content" > file.txt
+        git add file.txt
+        git commit -m "Make a change"
+        gh pr create --title "Pull Request" --body "This is a pull request" --base main --head new-branch
+        gh pr merge --auto
       env:
-        GITHUB_TOKEN: ${{ secrets.BANK_MANAGEMENT_ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Set Version
       id: set_version
       run: echo "version=$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)" >> $GITHUB_ENV
