@@ -24,7 +24,8 @@ jobs:
           git config --global user.name "Meir Lustig"
           git config --global user.email "meirlustig1983@gmail.com"
           git fetch origin main
-          git checkout -b update-gradle-properties main
+          git branch -D update-gradle-properties || true
+          git checkout -b update-gradle-properties --track origin/main
       - name: Update Version
         run: ./gradlew increaseVersion
       - name: Commit and push changes
