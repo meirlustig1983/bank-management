@@ -33,34 +33,32 @@ jobs:
           arguments: build
       - name: Increase version
         run: ./gradlew increaseVersion
-      - name: Make a change in file.txt
-        run: echo "New content" >> file.txt
       - name: Commit and push changes
         run: |
-          git config --global user.name "Meir Lustig"
-          git config --global user.email "meirlustig1983@gmail.com"
-          git add file.txt
-          git commit -m "Update file.txt"
-          git push origin HEAD:main
+            git config --global user.name "Meir Lustig"
+            git config --global user.email "meirlustig1983@gmail.com"
+            git commit -m "Update gradle.properties"
+            git push origin HEAD:main
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          title: Pull Request Title
-          body: Pull request description goes here.
+            token: ${{ secrets.GITHUB_TOKEN }}
+            branch: main
+            title: BM-Update version properties file with the changes in gradle.properties file
+            body: |
+              This pull request updates the version properties file based on the changes made in the gradle.properties file.
       - name: Merge the pull request to main
         uses: actions/github-script@v4
         with:
           script: |
-            const pullRequest = context.payload.pull_request;
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-            octokit.pulls.merge({
-              owner: pullRequest.base.user.login,
-              repo: pullRequest.base.repo.name,
-              pull_number: pullRequest.number,
-              merge_method: 'squash'
-            });
+              const pullRequest = context.payload.pull_request;
+              const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+              octokit.pulls.merge({
+                owner: pullRequest.base.user.login,
+                repo: pullRequest.base.repo.name,
+                pull_number: pullRequest.number,
+                merge_method: 'squash'
+              });
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Stop Docker Compose
