@@ -30,6 +30,8 @@ jobs:
         git add gradle.properties
         git commit -m "Update version in gradle.properties"
         git push origin HEAD:main
+      env:
+        GITHUB_TOKEN: ${{ secrets.BANK_MANAGEMENT_ACCESS_TOKEN }}
     - name: Set Version
       id: set_version
       run: echo "version=$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)" >> $GITHUB_ENV
