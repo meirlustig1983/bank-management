@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
     outputs:
       workflow-complete: ${{ steps.complete.outputs.complete }}
@@ -41,10 +41,10 @@ jobs:
         id: complete
         run: echo "Build Is Completed"
 
-  Create Pull Request:
+  create-pull-request:
 
     runs-on: ubuntu-latest
-    needs: [ Build ]
+    needs: [ build ]
 
     steps:
       - uses: actions/checkout@v3
