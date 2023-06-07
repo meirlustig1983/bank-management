@@ -3,8 +3,6 @@ name: Pull Request CI
 on:
   pull_request:
     branches: [ "main" ]
-  workflow_run:
-    workflows: [ "New Branch Workflow" ]
 
 permissions:
   contents: write
