@@ -39,7 +39,7 @@ jobs:
       - name: Commit and push changes
         run: |
           git fetch origin update-gradle-properties
-          git merge origin/update-gradle-properties
+          git merge --allow-unrelated-histories origin/update-gradle-properties
           git add gradle.properties
           git commit -m "Update gradle.properties"
           git push origin update-gradle-properties
