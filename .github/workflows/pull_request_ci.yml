@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -30,9 +29,10 @@ jobs:
         run: ./gradlew increaseVersion
       - name: Commit and push changes
         run: |
+          git config --global credential.helper store
           git add gradle.properties
           git commit -m "Update gradle.properties"
-          git push origin update-gradle-properties --token "${{ secrets.GITHUB_TOKEN }}"
+          git push origin update-gradle-properties
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v3
         with:
