@@ -24,6 +24,6 @@ jobs:
         run:
           echo "Branch name: ${{ github.ref }}"
       - name: Build with Gradle
-        if: ${{ github.ref == 'refs/heads/update-gradle-properties' }}
+        if: '${{ github.ref == ''refs/heads/update-gradle-properties'' }}'
         run: |
           ./gradlew clean build
