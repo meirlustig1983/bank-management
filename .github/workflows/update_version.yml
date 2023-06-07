@@ -1,11 +1,11 @@
-name: Post Merge
+name: Update Project Version
 
 on:
   push:
     branches:
       - main
   workflow_run:
-    workflows: [ "Merge Workflow" ]
+    workflows: [ "Main CI" ]
     types:
       - completed
 
