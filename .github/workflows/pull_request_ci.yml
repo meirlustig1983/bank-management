@@ -42,7 +42,7 @@ jobs:
           script: |
             const { context, GitHub } = require('github-script');
 
-            const github = new GitHub(context.token);
+            const githubInstance = new GitHub(context.token);
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
@@ -51,7 +51,7 @@ jobs:
             const prTitle = 'BM-Update version properties file with the changes in gradle.properties file';
             const prBody = 'This pull request updates the version properties file based on the changes made in the gradle.properties file.';
 
-            github.pulls.create({
+            githubInstance.pulls.create({
               owner,
               repo,
               title: prTitle,
