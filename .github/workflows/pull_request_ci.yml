@@ -19,13 +19,41 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Install Docker Compose
-        run: sudo apt-get update && sudo apt-get install -y docker-compose
-      - name: Start Docker Compose
-        run: docker-compose up -d
-      - name: Build And Test with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      - name: Create New Branch
+        run: |
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
+          git fetch origin main
+          git checkout -b update-gradle-properties main
+      - name: Update Version
+        run: ./gradlew increaseVersion
+      - name: Commit and push changes
+        run: |
+          git add gradle.properties
+          git commit -m "Update gradle.properties"
+          git push origin update-gradle-properties
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v3
         with:
-          arguments: build
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          title: BM-Update version properties file with the changes in gradle.properties file
+          body: |
+            This pull request updates the version properties file based on the changes made in the gradle.properties file.
+      - name: Merge the pull request to main
+        uses: actions/github-script@v4
+        if: github.event_name == 'workflow_run' && github.event.workflow == 'Merge Workflow' && github.event.workflow_run.conclusion == 'success'
+        with:
+          script: |
+            const pullRequest = context.payload.workflow_run.pull_requests[0];
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            octokit.pulls.merge({
+              owner: pullRequest.base.user.login,
+              repo: pullRequest.base.repo.name,
+              pull_number: pullRequest.number,
+              merge_method: 'squash'
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Stop Docker Compose
         run: docker-compose down
