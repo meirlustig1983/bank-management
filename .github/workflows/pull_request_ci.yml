@@ -39,7 +39,7 @@ jobs:
           git push --force origin update-gradle-properties
       - name: Set workflow complete
         id: complete
-        run: echo "Build Workflow Completed"
+        run: echo "Build Is Completed"
 
   create_pull_request:
 
@@ -71,6 +71,6 @@ jobs:
           git push --force origin update-gradle-properties-2
       - name: Set workflow complete
         id: complete
-        run: echo "Create Pull Request Completed"
+        run: echo "Pull Request Created"
 
 
