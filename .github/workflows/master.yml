@@ -32,7 +32,6 @@ jobs:
           git config --global user.name "Meir Lustig"
           git config --global user.email "meirlustig1983@gmail.com"
           git checkout -b update-gradle-properties
-          git pull --rebase origin update-gradle-properties
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
