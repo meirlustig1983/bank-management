@@ -10,7 +10,8 @@ on:
       - completed
 
 jobs:
-  post_merge:
+  update_version:
+    needs: ci
     runs-on: ubuntu-latest
 
     steps:
