@@ -1,9 +1,10 @@
 name: Update Gradle Properties
 
 on:
-  create:
-    branches:
-      - update-gradle-properties
+  workflow_run:
+    workflows: [ "Pull Request CI" ]
+    types:
+      - completed
 
 permissions:
   contents: write
