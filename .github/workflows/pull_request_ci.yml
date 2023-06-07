@@ -9,7 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  create-new-branch:
+
     runs-on: ubuntu-latest
     outputs:
       workflow-complete: ${{ steps.complete.outputs.complete }}
