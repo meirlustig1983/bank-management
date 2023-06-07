@@ -1,0 +1,37 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Create New Branch
+        run: |
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
+          git fetch origin main
+          git branch -D update-gradle-properties-2 || true
+          git checkout -b update-gradle-properties-2 --track origin/main
+      - name: Update Version
+        run: ./gradlew increaseVersion
+      - name: Commit and push changes
+        run: |
+          git config --global credential.helper store
+          git add gradle.properties
+          git commit -m "Update gradle.properties"
+          git pull origin main
+          git push --force origin update-gradle-properties-2
