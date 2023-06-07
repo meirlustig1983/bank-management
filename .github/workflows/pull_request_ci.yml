@@ -32,7 +32,7 @@ jobs:
           git config --global credential.helper store
           git add gradle.properties
           git commit -m "Update gradle.properties"
-          git push origin update-gradle-properties --set-upstream --repo=github.com/${{ github.repository }}.git --${{ secrets.GITHUB_TOKEN }}
+          git push origin update-gradle-properties --set-upstream
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v3
         with:
