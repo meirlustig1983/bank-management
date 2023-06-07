@@ -33,10 +33,8 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-012: Add test suite](https://github.com/meirlustig1983/bank-management/pull/12)
 * [BM-013: Optimization tests coverage](https://github.com/meirlustig1983/bank-management/pull/13)
 * [BM-014: Add 'Docker' support](https://github.com/meirlustig1983/bank-management/pull/14)
-* [BM-015: Use 'Version' from gradle file in dockerfile and 'Git' CICD workflow](https://github.com/meirlustig1983/bank-management/pull/15)
+* [BM-015: Use 'Version' from gradle file in dockerfile and 'Git' CI/CD workflow](https://github.com/meirlustig1983/bank-management/pull/15)
 * [BM-016: Add auto increment method for 'Version' in gradle file](https://github.com/meirlustig1983/bank-management/pull/16)
-
-
 
 ## Docker Compose Example
 
