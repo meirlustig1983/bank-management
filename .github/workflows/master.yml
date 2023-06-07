@@ -8,7 +8,8 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   build:
@@ -26,12 +27,35 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Start Docker Compose
         run: docker-compose up -d
-      - name: Increase version
-        run: ./gradlew increaseVersion
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
+      - name: Increase version
+        run: ./gradlew increaseVersion
+      - name: Make a change in file.txt
+        run: echo "New content" >> file.txt
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "Your Name"
+          git config --global user.email "your.email@example.com"
+          git add file.txt
+          git commit -m "Update file.txt"
+          git push origin HEAD:main
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          title: Pull Request Title
+          body: Pull request description goes here.
+      - name: Merge the pull request to main
+        uses: pullreminders/merge-action@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pull_number: ${{ github.event.pull_request.number }}
+          merge_method: squash
+          delete_branch: true
       - name: Stop Docker Compose
         run: docker-compose down
       - name: Docker login
