@@ -1,10 +1,9 @@
 name: Update Project Version Test
 
 on:
-  workflow_run:
-    workflows: [ "Update Project Version" ]
-    types:
-      - completed
+  push:
+    branches:
+      - update-gradle-properties
 
 permissions:
   contents: write
