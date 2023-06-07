@@ -30,7 +30,7 @@ jobs:
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Start Docker Compose
-        run: docker-compose up -d
+        run: docker-compose -f ./docker-compose.yml up -d
 
   build:
     needs: docker
@@ -46,4 +46,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Stop Docker Compose
-        run: docker-compose down
+        run: docker-compose -f ./docker-compose.yml down
