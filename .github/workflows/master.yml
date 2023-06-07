@@ -27,16 +27,18 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Start Docker Compose
         run: docker-compose up -d
+      - name: Create New Branch
+        run: |
+          git config --global user.name "Meir Lustig"
+          git config --global user.email "meirlustig1983@gmail.com"
+          git checkout -b update-gradle-properties
+          git pull --rebase origin update-gradle-properties
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: increaseVersion build
       - name: Commit and push changes
         run: |
-          git config --global user.name "Meir Lustig"
-          git config --global user.email "meirlustig1983@gmail.com"
-          git checkout -b update-gradle-properties
-          git pull --rebase origin update-gradle-properties
           git add gradle.properties
           git commit -m "Update gradle.properties"
           git push origin update-gradle-properties
