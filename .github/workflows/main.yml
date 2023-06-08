@@ -61,13 +61,11 @@ jobs:
       - name: Docker login
         run: |
           docker login -u ${{ secrets.DOCKER_USER_NAME }} -p ${{ secrets.DOCKER_TOKEN }}
-      - name: Get Gradle project version
-        id: get_version
-        run: |
-          echo "::set-output name=version::$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)"
       - name: Docker build and tag
+        env:
+          VERSION: ${{ steps.get_version.outputs.version }}
         run: |
-          docker build -t mlustig/bank-management:${{ steps.get_version.outputs.version }} --build-arg VERSION=${{ steps.get_version.outputs.version }} .
-          docker push mlustig/bank-management:${{ steps.get_version.outputs.version }}
-          docker tag mlustig/bank-management:${{ steps.get_version.outputs.version }} mlustig/bank-management:latest
+          docker build -t mlustig/bank-management:${VERSION} --build-arg VERSION=${VERSION} .
+          docker push mlustig/bank-management:${VERSION}
+          docker tag mlustig/bank-management:${VERSION} mlustig/bank-management:latest
           docker push mlustig/bank-management:latest
