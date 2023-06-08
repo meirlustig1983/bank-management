@@ -104,7 +104,14 @@ jobs:
           branch: version-increment
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Pull Request
+        id: create_pr
         run: |
           gh pr create --base main --head version-increment --title "version-increment" --body "Please review and merge the version increment changes." --assignee meirlustig1983 --label ci/cd
+          echo "::set-output name=pr_number::$(gh pr view --json number --jq .number)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge Pull Request
+        run: |
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --merge-method=merge --delete-branch --squash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
