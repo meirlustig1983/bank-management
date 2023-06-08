@@ -112,6 +112,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge Pull Request
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --merge-method=merge --delete-branch --squash
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --delete-branch --squash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
