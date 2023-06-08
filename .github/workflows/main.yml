@@ -112,7 +112,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge Pull Request
         run: |
-          PR_NUMBER=$(gh pr list --state open --title "version-increment" --json number --jq '.[0].number')
+          PR_TITLE="version-increment"
+          PR_NUMBER=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=open" | \
+            jq --arg PR_TITLE "$PR_TITLE" -r '.[] | select(.title == $PR_TITLE) | .number')
           gh pr merge $PR_NUMBER --auto --delete-branch --squash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
