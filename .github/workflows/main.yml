@@ -67,7 +67,7 @@ jobs:
           echo "version=$(sed -nE 's/version=([0-9]+\.[0-9]+\.[0-9]+)/\1/p' gradle.properties)" >> $GITHUB_ENV
       - name: Docker build and tag
         run: |
-          docker build -t mlustig/bank-management:${{ steps.get_version.outputs.version }} --build-arg VERSION=${{ steps.get_version.outputs.version }} .
-          docker push mlustig/bank-management:${{ steps.get_version.outputs.version }}
-          docker tag mlustig/bank-management:${{ steps.get_version.outputs.version }} mlustig/bank-management:latest
+          docker build -t mlustig/bank-management:${{ steps.get_version.version }} --build-arg VERSION=${{ steps.get_version.version }} .
+          docker push mlustig/bank-management:${{ steps.get_version.version }}
+          docker tag mlustig/bank-management:${{ steps.get_version.version }} mlustig/bank-management:latest
           docker push mlustig/bank-management:latest
