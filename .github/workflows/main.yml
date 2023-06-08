@@ -106,12 +106,13 @@ jobs:
       - name: Create Pull Request
         id: create_pr
         run: |
-          gh pr create --base main --head version-increment --title "version-increment" --body "Please review and merge the version increment changes." --assignee meirlustig1983 --label ci/cd
+          gh pr create --base main --head version-increment --title "version-increment" --body "Please review and merge the version increment changes." --assignee meirlustig1983 --label version
           echo "::set-output name=pr_number::$(gh pr view --json number --jq .number)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge Pull Request
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --delete-branch --squash
+          PR_NUMBER=$(gh pr list --state open --title "version-increment" --json number --jq '.[0].number')
+          gh pr merge $PR_NUMBER --auto --delete-branch --squash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
