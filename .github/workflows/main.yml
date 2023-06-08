@@ -103,3 +103,8 @@ jobs:
         with:
           branch: version-increment
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Pull Request
+        run: |
+          gh pr create --base main --head version-increment --title "Version Increment" --body "Please review and merge the version increment changes."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
