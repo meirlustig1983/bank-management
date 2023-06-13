@@ -22,7 +22,7 @@ jobs:
           else
             echo "::set-output name=has_readme_changes::false"
           fi
-      - name: Label PR with 'documentation'
+      - name: Label PR with 'documentation' testttttt
         if: ${{ steps.check_readme_changes.outputs.has_readme_changes == 'true' }}
         uses: actions/github-script@v4
         with:
