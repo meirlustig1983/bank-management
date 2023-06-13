@@ -10,6 +10,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * Spring Web Services
 * Spring Data JPA
 * Spring Web
+* Spring Actuator
 * Rest Repositories
 * Lombok 1.18.26
 * Junit
@@ -36,6 +37,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-015: Use 'Version' from gradle file in dockerfile and 'Git' CI/CD workflow](https://github.com/meirlustig1983/bank-management/pull/15)
 * [BM-016: Add auto increment method for 'Version' in gradle file](https://github.com/meirlustig1983/bank-management/pull/16)
 * [BM-017: Add support of 'main' and 'Pull Request' Git Workflows](https://github.com/meirlustig1983/bank-management/tree/main/.github/workflows)
+* [BM-018: Add support of 'Spring Actuator'](https://github.com/meirlustig1983/bank-management/pull/89)
 
 ## Docker Compose Example
 

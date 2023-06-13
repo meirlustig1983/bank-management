@@ -1,5 +1,7 @@
 server:
   port: 8080
+
+
 management:
   server:
     port: 8090
@@ -9,7 +11,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: env, health
+        include: health
 
 # logging
 logging:
