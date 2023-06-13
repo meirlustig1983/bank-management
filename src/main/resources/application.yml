@@ -1,17 +1,20 @@
 server:
   port: 8080
 
-
 management:
-  server:
-    port: 8090
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        include: health
+        include:
+          - health
+          - prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 # logging
 logging:
@@ -21,7 +24,6 @@ logging:
       springframework:
         web: INFO
         security: INFO
-
 
 spring:
   jpa:

@@ -17,6 +17,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * Git CI-CD Workflow
 * PostgreSQL
 * Docker
+* Prometheus
 
 ## Branches
 
@@ -38,6 +39,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-016: Add auto increment method for 'Version' in gradle file](https://github.com/meirlustig1983/bank-management/pull/16)
 * [BM-017: Add support of 'main' and 'Pull Request' Git Workflows](https://github.com/meirlustig1983/bank-management/tree/main/.github/workflows)
 * [BM-018: Add support of 'Spring Actuator'](https://github.com/meirlustig1983/bank-management/pull/89)
+* [BM-019: Add support of 'Prometheus'](https://github.com/meirlustig1983/bank-management/pull/91)
 
 ## Docker Compose Example
 
