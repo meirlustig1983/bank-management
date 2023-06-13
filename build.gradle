@@ -21,6 +21,48 @@ tasks.register('increaseVersion') {
     }
 }
 
+// Create a new group named "docker"
+def dockerGroup = tasks.create('docker') {
+    group = 'docker' // Assign the group to the "docker" category
+    description = 'Docker tasks' // Optional: Add a description for the group
+}
+
+def version = project.property('version')
+
+def dockerBuild = tasks.create('dockerBuild', Exec) {
+    group = 'docker'
+    description = 'Build Docker image'
+    commandLine 'docker', 'build', '-t', "mlustig/bank-management:$version", '--build-arg', "VERSION=$version", '.'
+}
+
+def dockerTagLatest = tasks.create('dockerTagLatest', Exec) {
+    group = 'docker'
+    description = 'Tag Docker image latest'
+    commandLine 'docker', 'tag', "mlustig/bank-management:$version", "mlustig/bank-management:latest"
+}
+
+def dockerPublish = tasks.create('dockerPublish', Exec) {
+    group = 'docker'
+    description = 'Publish Docker image'
+    commandLine 'docker', 'push', "mlustig/bank-management:$version"
+}
+
+def dockerPublishLatest = tasks.create('dockerPublishLatest', Exec) {
+    group = 'docker'
+    description = 'Publish Docker image'
+    commandLine 'docker', 'push', 'mlustig/bank-management:latest'
+}
+
+dockerTagLatest.dependsOn(dockerBuild)
+dockerPublish.dependsOn(dockerBuild)
+dockerPublishLatest.dependsOn(dockerTagLatest)
+
+tasks.create('dockerBuildTagPublish') {
+    group = 'docker'
+    description = 'Build, tag, and publish Docker image'
+    dependsOn dockerBuild, dockerTagLatest, dockerPublish, dockerPublishLatest
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
