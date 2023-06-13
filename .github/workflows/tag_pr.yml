@@ -1,0 +1,44 @@
+name: Pull Request Workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  tag_pull_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if files modified
+        id: check_files
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Find modified files
+        id: find_modified_files
+        run: |
+          echo "::set-output name=files::$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})"
+      - name: Add 'documentation' tag if README.md is modified
+        id: tag_pull_request
+        run: |
+          if echo "${{ steps.find_modified_files.outputs.files }}" | grep -q 'README\.md'; then
+            echo "::set-output name=tag::documentation"
+          else
+            echo "::set-output name=tag::"
+          fi
+      - name: Add tag to Pull Request
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = '${{ steps.tag_pull_request.outputs.tag }}';
+            if (tag !== '') {
+              const tagParams = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                tags: [tag]
+              };
+              await github.issues.addLabels(tagParams);
+            }
