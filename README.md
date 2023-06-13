@@ -40,6 +40,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-017: Add support of 'main' and 'Pull Request' Git Workflows](https://github.com/meirlustig1983/bank-management/tree/main/.github/workflows)
 * [BM-018: Add support of 'Spring Actuator'](https://github.com/meirlustig1983/bank-management/pull/89)
 * [BM-019: Add support of 'Prometheus'](https://github.com/meirlustig1983/bank-management/pull/91)
+* [BM-021: Update Dockerfile and docker-compose file](https://github.com/meirlustig1983/bank-management/pull/93)
 
 ## Docker Compose Example
 
