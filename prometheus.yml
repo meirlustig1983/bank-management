@@ -5,11 +5,11 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: [ '127.0.0.1:9090' ]
+      - targets: ['prometheus:9090']  # Update to 'prometheus' as the target
   - job_name: 'bank-management'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ '127.0.0.1:8090' ]
+      - targets: ['bank-management:8080']  # Update to 'bank-management' as the target
         labels:
           application: 'Bank Management Application'
