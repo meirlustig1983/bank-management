@@ -43,6 +43,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-021: Update Dockerfile and docker-compose file](https://github.com/meirlustig1983/bank-management/pull/93)
 * [BM-022: Add 'Docker' tasks for gradle](https://github.com/meirlustig1983/bank-management/pull/95)
 * [BM-023: FIX GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/97)
+* [FIX: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/98)
 
 ## Docker Compose Example
 
