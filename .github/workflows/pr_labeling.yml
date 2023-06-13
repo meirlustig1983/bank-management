@@ -26,18 +26,18 @@ jobs:
         if: ${{ steps.check_readme_changes.outputs.has_readme_changes == 'true' }}
         uses: actions/github-script@v4
         with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const { context } = github;
-          const issueNumber = context.issue.number;
-          const owner = context.repo.owner;
-          const repo = context.repo.repo;
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context } = github;
+            const issueNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
           
-          const labels = ['documentation'];
+            const labels = ['documentation'];
           
-          github.issues.addLabels({
-            owner: owner,
-            repo: repo,
-            issue_number: issueNumber,
-            labels: labels
-          });
+            github.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: issueNumber,
+              labels: labels
+            });
