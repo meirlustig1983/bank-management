@@ -12,11 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   bank-management:
     image: mlustig/bank-management:latest
@@ -27,8 +22,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
   prometheus:
     image: prom/prometheus
@@ -39,8 +33,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      bank-management:
-        condition: service_healthy
+      - bank-management
 
 volumes:
   postgres_data:
