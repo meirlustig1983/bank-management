@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-1804-arm64
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -24,7 +24,7 @@ jobs:
           gradle build --exclude-task test
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-1804-arm64
     needs: [ build ]
     steps:
       - uses: actions/checkout@v3
@@ -67,7 +67,7 @@ jobs:
           gradle dockerBuildTagPublish
 
   version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-1804-arm64
     needs: [ docker ]
     steps:
       - name: Checkout repository
