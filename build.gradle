@@ -117,10 +117,17 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.register('integrationTest', Test) {
+tasks.register('integrationTests', Test) {
     group 'verification'
     useJUnitPlatform {
         includeTags 'integration'
+    }
+}
+
+tasks.register('unitTests', Test) {
+    group 'verification'
+    useJUnitPlatform {
+        excludeTags 'integration'
     }
 }
 
@@ -129,5 +136,3 @@ test {
         excludeTags 'integration'
     }
 }
-
-test.dependsOn tasks.integrationTest
