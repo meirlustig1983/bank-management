@@ -116,3 +116,18 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.register('integrationTest', Test) {
+    group 'verification'
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
+}
+
+test.dependsOn tasks.integrationTest
