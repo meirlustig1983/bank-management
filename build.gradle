@@ -57,10 +57,16 @@ dockerTagLatest.dependsOn(dockerBuild)
 dockerPublish.dependsOn(dockerBuild)
 dockerPublishLatest.dependsOn(dockerTagLatest)
 
-tasks.create('dockerBuildTagPublish') {
+tasks.create('dockerBuildPublishVersion') {
     group = 'docker'
-    description = 'Build, tag, and publish Docker image'
-    dependsOn dockerBuild, dockerTagLatest, dockerPublish, dockerPublishLatest
+    description = 'Build, tag, and publish Docker versionimage'
+    dependsOn dockerBuild, dockerPublish
+}
+
+tasks.create('dockerBuildPublishLatest') {
+    group = 'docker'
+    description = 'Build, tag, and publish Docker latest image'
+    dependsOn dockerBuild, dockerTagLatest, dockerPublishLatest
 }
 
 configurations {
@@ -109,4 +115,24 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.register('integrationTests', Test) {
+    group 'verification'
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+}
+
+tasks.register('unitTests', Test) {
+    group 'verification'
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
 }

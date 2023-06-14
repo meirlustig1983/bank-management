@@ -3,10 +3,7 @@ package com.mlustig.bank_management.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlustig.bank_management.dto.BankAccountDto;
 import com.mlustig.bank_management.requests.TransactionRequest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +19,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Tag("integration")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs

@@ -6,6 +6,7 @@ import com.mlustig.bank_management.enums.TransactionType;
 import com.mlustig.bank_management.utils.CustomDisplayNameGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 @Transactional
 @SpringBootTest
 @Sql(scripts = "/data/recreate-datasets-1.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
