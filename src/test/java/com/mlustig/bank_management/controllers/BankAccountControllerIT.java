@@ -494,6 +494,23 @@ public class BankAccountControllerIT {
 
     @Test
     @Order(30)
+    void deactivateInactiveAccount() throws Exception {
+        mockMvc.perform(put("/api/v1/bank-accounts/{accountId}/deactivate", "meir.lustig@gmail.com"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accountId").value("meir.lustig@gmail.com"))
+                .andExpect(jsonPath("$.firstName").value("Meir"))
+                .andExpect(jsonPath("$.lastName").value("Lustig"))
+                .andExpect(jsonPath("$.balance").value(-1500.0))
+                .andExpect(jsonPath("$.minimumBalance").value(-1500.0))
+                .andExpect(jsonPath("$.active").value(false))
+                .andExpect(jsonPath("$.transactions").isArray())
+                .andExpect(jsonPath("$.transactions").isNotEmpty())
+                .andDo(document("{method-name}"));
+    }
+
+    @Test
+    @Order(31)
     void deleteFirstBankAccount() throws Exception {
         mockMvc.perform(delete("/api/v1/bank-accounts/{accountId}", "john.doe@gmail.com"))
                 .andExpect(status().isNoContent())
@@ -508,7 +525,7 @@ public class BankAccountControllerIT {
     }
 
     @Test
-    @Order(31)
+    @Order(32)
     void deleteSecondBankAccount() throws Exception {
         mockMvc.perform(delete("/api/v1/bank-accounts/{accountId}", "meir.lustig@gmail.com"))
                 .andExpect(status().isNoContent())
@@ -523,7 +540,7 @@ public class BankAccountControllerIT {
     }
 
     @Test
-    @Order(32)
+    @Order(33)
     void deleteBankAccountWithWrongFormatAccountId() throws Exception {
         mockMvc.perform(delete("/api/v1/bank-accounts/{accountId}", "meir.lustiggmail.com"))
                 .andExpect(status().isBadRequest())
@@ -535,7 +552,7 @@ public class BankAccountControllerIT {
     }
 
     @Test
-    @Order(33)
+    @Order(34)
     void deleteBankAccountWithNoExistsAccountId() throws Exception {
         mockMvc.perform(delete("/api/v1/bank-accounts/{accountId}", "no.exists@gmail.com"))
                 .andExpect(status().isNoContent())
@@ -543,7 +560,7 @@ public class BankAccountControllerIT {
     }
 
     @Test
-    @Order(34)
+    @Order(35)
     void makeWithdrawWithWrongFieldType() throws Exception {
 
         HashMap<String, String> request = new HashMap<>();

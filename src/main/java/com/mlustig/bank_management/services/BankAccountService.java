@@ -72,8 +72,11 @@ public class BankAccountService {
         Optional<BankAccount> original = dataFacade.findBankAccountByAccountId(accountId);
         if (original.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
+        } else if (!original.get().isActive()) {
+            return Optional.of(mapper.toDto(original.get()));
+        } else {
+            return dataFacade.updateBankAccount(accountId, List.of(Pair.of(BankAccountFields.ACTIVE, "false"))).map(mapper::toDto);
         }
-        return dataFacade.updateBankAccount(accountId, List.of(Pair.of(BankAccountFields.ACTIVE, "false"))).map(mapper::toDto);
     }
 
     public Optional<BankAccountDto> makeDeposit(String accountId, double amount) {
