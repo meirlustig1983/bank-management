@@ -43,9 +43,10 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-019: Add support of 'Prometheus'](https://github.com/meirlustig1983/bank-management/pull/91)
 * [BM-021: Update Dockerfile and docker-compose file](https://github.com/meirlustig1983/bank-management/pull/93)
 * [BM-022: Add 'Docker' tasks for gradle](https://github.com/meirlustig1983/bank-management/pull/95)
-* [FIX GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/97)
-* [FIX: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/98)
+* [FIX-001: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/97)
+* [FIX-002: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/98)
 * [BM-23: Adding custom metrics](https://github.com/meirlustig1983/bank-management/pull/100)
+* [BM-24: Add support of 'Grafana'](https://github.com/meirlustig1983/bank-management/pull/108)
 
 ## Docker Compose Example
 
@@ -59,4 +60,3 @@ Bank management is a some type of sand-box repository to try a new technologies
             - "8080:8080"
         depends_on:
             postgres:
-                condition: service_healthy
