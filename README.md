@@ -47,7 +47,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [FIX-002: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/98)
 * [BM-23: Adding custom metrics](https://github.com/meirlustig1983/bank-management/pull/100)
 * [BM-24: Add support of 'Grafana'](https://github.com/meirlustig1983/bank-management/pull/108)
-* [FIX-003: Update deactivate account method](https://github.com/meirlustig1983/bank-management/pull/110)
+* [FIX-003: Update activate and deactivate account methods](https://github.com/meirlustig1983/bank-management/pull/110)
 
 ## Docker Compose Example
 

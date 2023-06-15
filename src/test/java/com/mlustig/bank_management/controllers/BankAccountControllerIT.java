@@ -310,6 +310,23 @@ public class BankAccountControllerIT {
     }
 
     @Test
+    @Order(18)
+    void activateActiveAccount() throws Exception {
+        mockMvc.perform(put("/api/v1/bank-accounts/{accountId}/activate", "meir.lustig@gmail.com"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accountId").value("meir.lustig@gmail.com"))
+                .andExpect(jsonPath("$.firstName").value("Meir"))
+                .andExpect(jsonPath("$.lastName").value("Lustig"))
+                .andExpect(jsonPath("$.balance").value(45000))
+                .andExpect(jsonPath("$.minimumBalance").value(-1500))
+                .andExpect(jsonPath("$.active").value(true))
+                .andExpect(jsonPath("$.transactions").isArray())
+                .andExpect(jsonPath("$.transactions").isEmpty())
+                .andDo(document("{method-name}"));
+    }
+
+    @Test
     @Order(19)
     void makeDepositToFirstAccount() throws Exception {
         TransactionRequest request = new TransactionRequest("john.doe@gmail.com", 500);
