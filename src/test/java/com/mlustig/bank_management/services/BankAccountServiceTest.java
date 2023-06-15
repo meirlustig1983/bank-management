@@ -180,6 +180,44 @@ public class BankAccountServiceTest {
     }
 
     @Test
+    @DisplayName("Test activate active bank account")
+    public void activateActiveAccount() {
+
+        BankAccount original = BankAccount.builder()
+                .id(1L)
+                .accountId("theodore.roosevelt@gmail.com")
+                .firstName("Theodore")
+                .lastName("Roosevelt")
+                .balance(BigDecimal.valueOf(3500))
+                .minimumBalance(BigDecimal.valueOf(1500))
+                .active(true)
+                .build();
+
+        BankAccountDto originalBankAccountDto = new BankAccountDto("theodore.roosevelt@gmail.com",
+                "Theodore", "Roosevelt",
+                BigDecimal.valueOf(3500), BigDecimal.valueOf(1500), true, List.of());
+
+        when(dataFacade.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.of(original));
+        when(mapper.toDto(original)).thenReturn(originalBankAccountDto);
+
+        Optional<BankAccountDto> result = service.activateAccount("theodore.roosevelt@gmail.com");
+
+        assertTrue(result.isPresent());
+        BankAccountDto bankAccountDto = result.get();
+        assertThat(bankAccountDto.accountId()).isEqualTo("theodore.roosevelt@gmail.com");
+        assertThat(bankAccountDto.firstName()).isEqualTo("Theodore");
+        assertThat(bankAccountDto.lastName()).isEqualTo("Roosevelt");
+        assertThat(bankAccountDto.balance().intValue()).isEqualTo(3500);
+        assertThat(bankAccountDto.minimumBalance().intValue()).isEqualTo(1500);
+        assertThat(bankAccountDto.active()).isTrue();
+        assertThat(bankAccountDto.balance()).isGreaterThan(bankAccountDto.minimumBalance());
+
+        verify(dataFacade).findBankAccountByAccountId("theodore.roosevelt@gmail.com");
+        verify(dataFacade, never()).updateBankAccount("theodore.roosevelt@gmail.com", List.of(Pair.of(BankAccountFields.ACTIVE, "true")));
+        verifyNoMoreInteractions(dataFacade);
+    }
+
+    @Test
     @DisplayName("Test activate on to not-exists bank account")
     public void activateAccount_WithNotExistsBankAccount() {
         when(dataFacade.findBankAccountByAccountId("theodore.roosevelt@gmail.com")).thenReturn(Optional.empty());

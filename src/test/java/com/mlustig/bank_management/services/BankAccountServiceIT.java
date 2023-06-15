@@ -67,6 +67,26 @@ public class BankAccountServiceIT {
     }
 
     @Test
+    @DisplayName("Test activate active bank account.")
+    public void activateActiveAccount() {
+
+        Optional<BankAccountDto> result = service.getAccountInfo("franklin.benjamin@gmail.com");
+
+        assertThat(result.isPresent()).isTrue();
+
+        BankAccountDto bankAccountDto = result.get();
+        assertThat(bankAccountDto.active()).isFalse();
+
+        service.activateAccount("franklin.benjamin@gmail.com");
+        result = service.activateAccount("franklin.benjamin@gmail.com");
+
+        assertThat(result.isPresent()).isTrue();
+
+        bankAccountDto = result.get();
+        assertThat(bankAccountDto.active()).isTrue();
+    }
+
+    @Test
     @DisplayName("Test activate not-exists bank account.")
     public void activateAccount_WithNotExistsBankAccount() {
         assertThrows(EntityNotFoundException.class, () -> service.activateAccount("fake@gmail.com"));
