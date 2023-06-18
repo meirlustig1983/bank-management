@@ -1,0 +1,9 @@
+{
+  "auths": {
+    "https://index.docker.io/v1/": {
+      "auth": "bWx1c3RpZzpkY2tyX3BhdF9OU05vb0M0amJhaFZGcjFOS1RDTEhFSXZJdW8="
+    }
+  },
+  "credsStore": "desktop",
+  "currentContext": "desktop-linux"
+}
