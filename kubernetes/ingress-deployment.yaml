@@ -37,3 +37,10 @@ spec:
                 name: prometheus
                 port:
                   number: 9090
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
