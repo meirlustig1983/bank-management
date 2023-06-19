@@ -1,4 +1,16 @@
-.PHONY: install_minikube install_kubernetes_cli kubectl_version minikube_start minikube_stop minikube_update minikube_delete minikube_init minikube_restart bank_management_service_ip_dev postgres_service_ip_dev prometheus_service_ip_dev grafana_service_ip_dev create_namespaces delete_namespaces get_namespaces get_nodes get_pods_dev get_services_dev get_secrets_dev get_ingress_dev get_configmaps get_configmaps_dev create_postgres_dev delete_postgres_dev create_bank_management_dev delete_bank_management_dev create_prometheus_dev delete_prometheus_dev create_grafana_dev delete_grafana_dev create_ingress_dev delete_ingress_dev init
+.PHONY: install_minikube install_kubernetes_cli \
+    kubectl_version \
+    minikube_start minikube_stop minikube_update minikube_delete \
+    minikube_init minikube_restart \
+    bank_management_service_ip_dev postgres_service_ip_dev prometheus_service_ip_dev grafana_service_ip_dev \
+    get_namespaces get_nodes get_pods_dev get_services_dev get_secrets_dev get_ingress_dev \
+    get_configmaps get_configmaps_dev \
+    create_namespaces delete_namespaces \
+    create_postgres_dev delete_postgres_dev \
+    create_bank_management_dev delete_bank_management_dev \
+    create_prometheus_dev delete_prometheus_dev \
+    create_grafana_dev delete_grafana_dev \
+    create_ingress_dev delete_ingress_dev init
 
 install_minikube:
 	brew install minikube || true
