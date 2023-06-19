@@ -19,6 +19,8 @@ Bank management is a some type of sand-box repository to try a new technologies
 * Docker
 * Prometheus
 * Metrics
+* Kubernetes
+* Helm Chart
 
 ## Branches
 
@@ -48,6 +50,8 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-023: Adding custom metrics](https://github.com/meirlustig1983/bank-management/pull/100)
 * [BM-024: Add support of 'Grafana'](https://github.com/meirlustig1983/bank-management/pull/108)
 * [FIX-003: Update activate and deactivate account methods](https://github.com/meirlustig1983/bank-management/pull/110)
+* [BM-025: Add Kubernetes files](https://github.com/meirlustig1983/bank-management/pull/112)
+* [BM-026: Add Helm Chart files](https://github.com/meirlustig1983/bank-management/pull/117)
 
 ## Docker Compose Example
 
