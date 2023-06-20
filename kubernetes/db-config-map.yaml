@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: stage
+data:
+  spring_datasource_url: "jdbc:postgresql://postgres:5432/postgres"

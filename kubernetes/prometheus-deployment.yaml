@@ -62,8 +62,9 @@ metadata:
 spec:
   selector:
     app: prometheus
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 9090
       targetPort: 9090
-  type: NodePort
+      nodePort: 39090
