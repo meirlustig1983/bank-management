@@ -1,6 +1,6 @@
-.PHONY: install_hyperkit install_minikube install_kubernetes_cli \
+.PHONY: install_minikube install_kubernetes_cli \
     kubectl_version \
-    install start stop update delete init restart \
+    install start stop update delete init restart_server restart_data restart_server_data \
     create_namespaces delete_namespaces \
     create_postgres delete_postgres \
     create_dockerhub_secret delete_dockerhub_secret \
@@ -12,9 +12,6 @@
     create_prometheus delete_prometheus \
     create_grafana delete_grafana \
     create_ingress delete_ingress
-
-install_hyperkit:
-	brew install hyperkit || true
 
 install_minikube:
 	brew install minikube || true
@@ -45,15 +42,16 @@ create_namespaces:
 delete_namespaces:
 	kubectl delete -f namespace.yaml
 
-init: start create_namespaces
-
-restart: delete init
-
 create_postgres:
 	kubectl apply -f postgres-deployment.yaml -n stage
 
 delete_postgres:
 	kubectl delete -f postgres-deployment.yaml -n stage
+
+create_secret_for_docker:
+	kubectl create secret generic dockerhub-secret-temp \
+		--from-file=.dockerconfigjson=config.json \
+		--type=kubernetes.io/dockerconfigjson
 
 create_dockerhub_secret:
 	kubectl apply -f dockerhub-secret.yaml -n stage
@@ -73,9 +71,29 @@ create_bank_management:
 delete_bank_management:
 	kubectl delete -f bank-management-deployment.yaml -n stage
 
-create_components: create_postgres create_dockerhub_secret create_db_config_map create_bank_management
+create_prometheus:
+	kubectl apply -f prometheus-deployment.yaml -n stage
 
-delete_components: delete_postgres delete_dockerhub_secret delete_db_config_map delete_bank_management
+delete_prometheus:
+	kubectl delete -f prometheus-deployment.yaml -n stage
+
+create_grafana:
+	kubectl apply -f grafana-deployment.yaml -n stage
+
+delete_grafana:
+	kubectl delete -f grafana-deployment.yaml -n stage
+
+create_components: create_namespaces create_postgres create_dockerhub_secret create_db_config_map create_bank_management create_prometheus create_grafana
+
+init: start create_components
+
+restart_server: delete start
+
+restart_server_data: delete init
+
+restart_data: delete_components create_components
+
+delete_components: delete_postgres delete_dockerhub_secret delete_db_config_map delete_bank_management delete_prometheus delete_grafana delete_namespaces
 
 get_namespaces:
 	kubectl get namespaces
@@ -100,26 +118,17 @@ get_ingress:
 
 show_components: get_namespaces get_configmaps get_secrets get_nodes get_pods get_services get_ingress
 
-
-
-
-
 bank_management_service_ip:
-	minikube service bank-management -n stage
+	minikube service bank-management-service -n stage
 
 postgres_service_ip:
-	minikube service postgres -n stage
+	minikube service postgres-service -n stage
 
 prometheus_service_ip:
-	minikube service prometheus -n stage
+	minikube service prometheus-service -n stage
 
 grafana_service_ip:
-	minikube service grafana -n stage
-
-create_secret_for_docker:
-	kubectl create secret generic dockerhub-secret-temp \
-		--from-file=.dockerconfigjson=config.json \
-		--type=kubernetes.io/dockerconfigjson
+	minikube service grafana-service -n stage
 
 
 
@@ -127,17 +136,7 @@ create_secret_for_docker:
 
 
 
-create_prometheus:
-	kubectl apply -f prometheus-deployment.yaml -n stage
 
-delete_prometheus:
-	kubectl delete -f prometheus-deployment.yaml -n stage
-
-create_grafana:
-	kubectl apply -f grafana-deployment.yaml -n stage
-
-delete_grafana:
-	kubectl delete -f grafana-deployment.yaml -n stage
 
 create_ingress:
 	kubectl apply -f ingress-deployment.yaml -n stage
