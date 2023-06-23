@@ -1,0 +1,5 @@
+apiVersion: v2
+name: bank-management-chart
+description: A Helm chart for deploying bank-management application
+version: 1.0.0
+appVersion: 1.0.0
