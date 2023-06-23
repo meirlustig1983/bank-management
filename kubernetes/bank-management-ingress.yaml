@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bank-management-ingress
+  namespace: stage
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: myapp.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/prometheus"
+        backend:
+          service:
+            name: prometheus-service
+            port:
+              number: 9090
+      - pathType: Prefix
+        path: "/grafana"
+        backend:
+          service:
+            name: grafana-service
+            port:
+              number: 3000
