@@ -1,17 +1,23 @@
 .PHONY: install_minikube install_kubernetes_cli \
-    kubectl_version \
-    install start stop update delete init restart_server restart_data restart_server_data \
+    kubectl_version ingress_nginx_check \
+    install start stop update delete \
+    restart_server restart_data restart_server_data \
+    kill_pods \
+    show_addons \
+    dashboard \
     create_namespaces delete_namespaces \
+    create_secrets delete_secrets \
+    create_config_maps delete_config_maps \
+    create_persistent_volumes delete_persistent_volumes \
     create_postgres delete_postgres \
-    create_dockerhub_secret delete_dockerhub_secret \
-    create_db_config_map delete_db_config_map \
     create_bank_management delete_bank_management \
     create_components delete_components show_components \
     bank_management_service_ip postgres_service_ip prometheus_service_ip grafana_service_ip \
-    get_namespaces get_nodes get_pods get_services get_secrets get_ingress get_configmaps \
+    get_nodes get_namespaces get_secrets get_configmaps get_persistent_volumes \
+    get_pods get_services \
+    show_commons show_components show_all \
     create_prometheus delete_prometheus \
-    create_grafana delete_grafana \
-    create_ingress delete_ingress
+    create_grafana delete_grafana
 
 install_minikube:
 	brew install minikube || true
@@ -22,10 +28,22 @@ install_kubernetes_cli:
 kubectl_version:
 	kubectl version
 
+ingress_nginx_check:
+	kubectl get pods -n ingress-nginx
+
 install: install_minikube install_kubernetes_cli
 
 start: install
 	minikube start
+	minikube addons enable ingress
+	minikube addons enable dashboard
+	minikube addons enable metrics-server
+
+show_addons:
+	minikube addons list
+
+dashboard:
+	minikube dashboard
 
 stop:
 	minikube stop
@@ -42,28 +60,34 @@ create_namespaces:
 delete_namespaces:
 	kubectl delete -f namespace.yaml
 
-create_postgres:
-	kubectl apply -f postgres-deployment.yaml -n stage
-
-delete_postgres:
-	kubectl delete -f postgres-deployment.yaml -n stage
-
 create_secret_for_docker:
 	kubectl create secret generic dockerhub-secret-temp \
 		--from-file=.dockerconfigjson=config.json \
 		--type=kubernetes.io/dockerconfigjson
 
-create_dockerhub_secret:
-	kubectl apply -f dockerhub-secret.yaml -n stage
+create_secrets:
+	kubectl apply -f secrets.yaml -n stage
 
-delete_dockerhub_secret:
-	kubectl delete -f dockerhub-secret.yaml -n stage
+delete_secrets:
+	kubectl delete -f secrets.yaml -n stage
 
-create_db_config_map:
-	kubectl apply -f db-config-map.yaml -n stage
+create_config_maps:
+	kubectl apply -f config-maps.yaml -n stage
 
-delete_db_config_map:
-	kubectl delete -f db-config-map.yaml -n stage
+delete_config_maps:
+	kubectl delete -f config-maps.yaml -n stage
+
+create_persistent_volumes:
+	kubectl apply -f persistent-volumes.yaml -n stage
+
+delete_persistent_volumes:
+	kubectl delete -f persistent-volumes.yaml -n stage
+
+create_postgres:
+	kubectl apply -f postgres-deployment.yaml -n stage
+
+delete_postgres:
+	kubectl delete -f postgres-deployment.yaml -n stage
 
 create_bank_management:
 	kubectl apply -f bank-management-deployment.yaml -n stage
@@ -83,17 +107,23 @@ create_grafana:
 delete_grafana:
 	kubectl delete -f grafana-deployment.yaml -n stage
 
-create_components: create_namespaces create_postgres create_dockerhub_secret create_db_config_map create_bank_management create_prometheus create_grafana
+create_commons: create_namespaces create_config_maps create_secrets	create_persistent_volumes
 
-init: start create_components
+create_components: create_postgres create_bank_management create_prometheus create_grafana
 
 restart_server: delete start
 
-restart_server_data: delete init
+restart_server_data: delete start create_commons create_components
 
 restart_data: delete_components create_components
 
-delete_components: delete_postgres delete_dockerhub_secret delete_db_config_map delete_bank_management delete_prometheus delete_grafana delete_namespaces
+kill_pods:
+	kubectl delete pods --all -n stage
+
+delete_components: delete_prometheus delete_grafana delete_bank_management delete_postgres
+
+get_nodes:
+	kubectl get nodes
 
 get_namespaces:
 	kubectl get namespaces
@@ -104,8 +134,10 @@ get_configmaps:
 get_secrets:
 	kubectl get secrets -n stage
 
-get_nodes:
-	kubectl get nodes
+get_persistent_volumes:
+	kubectl get pv -n stage
+
+show_commons: get_nodes get_namespaces get_configmaps get_secrets get_persistent_volumes
 
 get_pods:
 	kubectl get pods -n stage
@@ -113,10 +145,9 @@ get_pods:
 get_services:
 	kubectl get services -n stage
 
-get_ingress:
-	kubectl get ingress -n stage
+show_components: get_pods get_services
 
-show_components: get_namespaces get_configmaps get_secrets get_nodes get_pods get_services get_ingress
+show_all: show_commons show_components
 
 bank_management_service_ip:
 	minikube service bank-management-service -n stage
@@ -129,18 +160,3 @@ prometheus_service_ip:
 
 grafana_service_ip:
 	minikube service grafana-service -n stage
-
-
-
-
-
-
-
-
-
-create_ingress:
-	kubectl apply -f ingress-deployment.yaml -n stage
-
-delete_ingress:
-	kubectl delete -f ingress-deployment.yaml -n stage
-
