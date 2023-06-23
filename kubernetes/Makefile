@@ -126,7 +126,7 @@ get_nodes:
 	kubectl get nodes
 
 get_namespaces:
-	kubectl get namespaces
+	kubectl get ns
 
 get_configmaps:
 	kubectl get configmaps -n stage
