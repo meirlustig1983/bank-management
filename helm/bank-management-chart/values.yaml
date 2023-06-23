@@ -13,34 +13,11 @@ service:
   port: 8080
   targetPort: 8080
   nodePort: 30080
-db:
-  name: postgres
-  credentials:
-    secretName: postgres-credentials
-    usernameKey: username
-    passwordKey: password
-
 imagePullSecrets:
   name: dockerhub-secret
-
-nameOverride: ""
-fullnameOverride: ""
-
-
-
-selectorLabels:
-  app: bank-management
-
-environment:
-  SPRING_PROFILES_ACTIVE: stage
-  SPRING_DATASOURCE_URL: db-config
-  SPRING_DATASOURCE_USERNAME: postgres-credentials
-  SPRING_DATASOURCE_PASSWORD: postgres-credentials
-
 configMap:
   name: db-config
   key: spring_datasource_url
-
 secret:
   name: postgres-credentials
   username:
