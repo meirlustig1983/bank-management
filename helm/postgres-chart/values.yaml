@@ -1,0 +1,23 @@
+replicaCount: 1
+metadata:
+  name: postgres
+  service: postgres-service
+  namespace: stage
+selector:
+  name: postgres
+image:
+  repository: postgres
+  tag: latest
+service:
+  type: LoadBalancer
+  port: 5432
+  targetPort: 5432
+  nodePort: 30032
+persistence:
+  claimName: postgres-pvc
+db:
+  name: postgres
+  credentials:
+    secretName: postgres-credentials
+    usernameKey: username
+    passwordKey: password

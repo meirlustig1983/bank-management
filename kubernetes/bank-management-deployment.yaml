@@ -1,17 +1,8 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: dockerhub-secret
-  namespace: dev
-data:
-  .dockerconfigjson: ewogICJhdXRocyI6IHsKICAgICJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CiAgICAgICJhdXRoIjogImJXeDFjM1JwWnpwa1kydHlYM0JoZEY5T1UwNXZiME0wYW1KaGFGWkdjakZPUzFSRFRFaEZTWFpKZFc4PSIKICAgIH0KICB9LAogICJjcmVkc1N0b3JlIjogImRlc2t0b3AiLAogICJjdXJyZW50Q29udGV4dCI6ICJkZXNrdG9wLWxpbnV4Igp9
-type: kubernetes.io/dockerconfigjson
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bank-management
+  namespace: stage
 spec:
   replicas: 2
   selector:
@@ -23,36 +14,43 @@ spec:
         app: bank-management
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret
+      - name: dockerhub-secret
       containers:
-        - name: bank-management
-          image: mlustig/bank-management:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/postgres
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: password
+      - name: bank-management
+        image: mlustig/bank-management:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: stage
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: spring_datasource_url
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: bank-management
+  name: bank-management-service
+  namespace: stage
 spec:
   selector:
     app: bank-management
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-  type: NodePort
+      nodePort: 30080

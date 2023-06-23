@@ -1,5 +1,4 @@
-.PHONY: install_minikube install_kubernetes_cli \
-    kubectl_version ingress_nginx_check \
+.PHONY: install_minikube install_kubernetes_cli install_helm \
     install start stop update delete \
     restart_server restart_data restart_server_data \
     kill_pods \
@@ -12,12 +11,10 @@
     create_postgres delete_postgres \
     create_bank_management delete_bank_management \
     create_components delete_components show_components \
-    bank_management_service_ip postgres_service_ip prometheus_service_ip grafana_service_ip \
+    bank_management_service_ip postgres_service_ip \
     get_nodes get_namespaces get_secrets get_configmaps get_persistent_volumes \
     get_pods get_services \
-    show_commons show_components show_all \
-    create_prometheus delete_prometheus \
-    create_grafana delete_grafana
+    show_commons show_components show_all
 
 install_minikube:
 	brew install minikube || true
@@ -25,13 +22,10 @@ install_minikube:
 install_kubernetes_cli:
 	brew install kubernetes-cli || true
 
-kubectl_version:
-	kubectl version
+install_helm:
+	brew install helm || true
 
-ingress_nginx_check:
-	kubectl get pods -n ingress-nginx
-
-install: install_minikube install_kubernetes_cli
+install: install_minikube install_kubernetes_cli install_helm
 
 start: install
 	minikube start
@@ -55,61 +49,44 @@ update:
 	minikube update-check
 
 create_namespaces:
-	kubectl apply -f namespace.yaml
+	kubectl apply -f commons/namespace.yaml
 
 delete_namespaces:
-	kubectl delete -f namespace.yaml
-
-create_secret_for_docker:
-	kubectl create secret generic dockerhub-secret-temp \
-		--from-file=.dockerconfigjson=config.json \
-		--type=kubernetes.io/dockerconfigjson
+	kubectl delete -f commons/namespace.yaml
 
 create_secrets:
-	kubectl apply -f secrets.yaml -n stage
+	kubectl apply -f commons/secrets.yaml -n stage
 
 delete_secrets:
-	kubectl delete -f secrets.yaml -n stage
+	kubectl delete -f commons/secrets.yaml -n stage
 
 create_config_maps:
-	kubectl apply -f config-maps.yaml -n stage
+	kubectl apply -f commons/config-maps.yaml -n stage
 
 delete_config_maps:
-	kubectl delete -f config-maps.yaml -n stage
+	kubectl delete -f commons/config-maps.yaml -n stage
 
 create_persistent_volumes:
-	kubectl apply -f persistent-volumes.yaml -n stage
+	kubectl apply -f commons/persistent-volumes.yaml -n stage
 
 delete_persistent_volumes:
-	kubectl delete -f persistent-volumes.yaml -n stage
+	kubectl delete -f commons/persistent-volumes.yaml -n stage
 
 create_postgres:
-	kubectl apply -f postgres-deployment.yaml -n stage
+	helm install postgres ./postgres-chart
 
 delete_postgres:
-	kubectl delete -f postgres-deployment.yaml -n stage
+	helm uninstall postgres
 
 create_bank_management:
-	kubectl apply -f bank-management-deployment.yaml -n stage
+	helm install bank-management ./bank-management-chart
 
 delete_bank_management:
-	kubectl delete -f bank-management-deployment.yaml -n stage
-
-create_prometheus:
-	kubectl apply -f prometheus-deployment.yaml -n stage
-
-delete_prometheus:
-	kubectl delete -f prometheus-deployment.yaml -n stage
-
-create_grafana:
-	kubectl apply -f grafana-deployment.yaml -n stage
-
-delete_grafana:
-	kubectl delete -f grafana-deployment.yaml -n stage
+	helm uninstall bank-management
 
 create_commons: create_namespaces create_config_maps create_secrets	create_persistent_volumes
 
-create_components: create_postgres create_bank_management create_prometheus create_grafana
+create_components: create_postgres create_bank_management
 
 restart_server: delete start
 
@@ -120,7 +97,7 @@ restart_data: delete_components create_components
 kill_pods:
 	kubectl delete pods --all -n stage
 
-delete_components: delete_prometheus delete_grafana delete_bank_management delete_postgres
+delete_components: delete_bank_management delete_postgres
 
 get_nodes:
 	kubectl get nodes
@@ -154,9 +131,3 @@ bank_management_service_ip:
 
 postgres_service_ip:
 	minikube service postgres-service -n stage
-
-prometheus_service_ip:
-	minikube service prometheus-service -n stage
-
-grafana_service_ip:
-	minikube service grafana-service -n stage

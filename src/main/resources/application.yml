@@ -1,3 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
 server:
   port: 8080
 
@@ -25,7 +30,11 @@ logging:
         web: INFO
         security: INFO
 
+---
 spring:
+  config:
+    activate:
+      on-profile: dev
   jpa:
     show-sql: true
     hibernate:
@@ -42,3 +51,40 @@ spring:
   mvc:
     validation:
       enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: stage
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  mvc:
+    validation:
+      enabled: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true

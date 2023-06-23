@@ -1,0 +1,26 @@
+replicaCount: 2
+metadata:
+  name: bank-management
+  service: bank-management-service
+  namespace: stage
+selector:
+  name: bank-management
+image:
+  repository: mlustig/bank-management
+  tag: latest
+service:
+  type: LoadBalancer
+  port: 8080
+  targetPort: 8080
+  nodePort: 30080
+imagePullSecrets:
+  name: dockerhub-secret
+configMap:
+  name: db-config
+  key: spring_datasource_url
+secret:
+  name: postgres-credentials
+  username:
+    key: username
+  password:
+    key: password
