@@ -53,6 +53,7 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [FIX-003: Update activate and deactivate account methods](https://github.com/meirlustig1983/bank-management/pull/110)
 * [BM-025: Add Kubernetes deployment files](https://github.com/meirlustig1983/bank-management/pull/112)
 * [BM-026: Add Helm Chart deployment files](https://github.com/meirlustig1983/bank-management/pull/117)
+* [BM-032: Add pgAdmin](https://github.com/meirlustig1983/bank-management/pull/122)
 
 ## Docker Compose Example
 
