@@ -13,6 +13,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: username@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "80:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
   bank-management:
     image: mlustig/bank-management:latest
     environment:
