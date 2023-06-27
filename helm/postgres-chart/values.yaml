@@ -7,7 +7,7 @@ selector:
   name: postgres
 image:
   repository: postgres
-  tag: latest
+  tag: 15.3-alpine
 service:
   type: LoadBalancer
   port: 5432
