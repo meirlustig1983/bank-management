@@ -45,15 +45,16 @@ Bank management is a some type of sand-box repository to try a new technologies
 * [BM-018: Add support of 'Spring Actuator'](https://github.com/meirlustig1983/bank-management/pull/89)
 * [BM-019: Add support of 'Prometheus'](https://github.com/meirlustig1983/bank-management/pull/91)
 * [BM-021: Update Dockerfile and docker-compose file](https://github.com/meirlustig1983/bank-management/pull/93)
-* [BM-022: Add 'Docker' tasks for gradle](https://github.com/meirlustig1983/bank-management/pull/95)
-* [FIX-001: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/97)
-* [FIX-002: GitHub Workflows](https://github.com/meirlustig1983/bank-management/pull/98)
+* [BM-022: Add 'Docker' tasks to gradle build](https://github.com/meirlustig1983/bank-management/pull/95)
+* [FIX-001: GitHub Workflows fix](https://github.com/meirlustig1983/bank-management/pull/97)
+* [FIX-002: GitHub Workflows fix](https://github.com/meirlustig1983/bank-management/pull/98)
 * [BM-023: Adding custom metrics](https://github.com/meirlustig1983/bank-management/pull/100)
 * [BM-024: Add support of 'Grafana'](https://github.com/meirlustig1983/bank-management/pull/108)
 * [FIX-003: Update activate and deactivate account methods](https://github.com/meirlustig1983/bank-management/pull/110)
 * [BM-025: Add Kubernetes deployment files](https://github.com/meirlustig1983/bank-management/pull/112)
 * [BM-026: Add Helm Chart deployment files](https://github.com/meirlustig1983/bank-management/pull/117)
 * [BM-032: Add pgAdmin](https://github.com/meirlustig1983/bank-management/pull/122)
+* [BM-031: Change Kubernetes Postgres kind to StatefulSet](https://github.com/meirlustig1983/bank-management/pull/124)
 
 ## Docker Compose Example
 
