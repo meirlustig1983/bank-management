@@ -7,7 +7,6 @@ import lombok.experimental.Accessors;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 @Accessors(chain = true)
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "bank_account")
+@Table(name = "bank_account", indexes = {@Index(name = "bank_account_account_id_idx", columnList = "accountId")})
 public class BankAccount {
 
     @Id
@@ -48,9 +47,6 @@ public class BankAccount {
     private BigDecimal minimumBalance;
 
     private boolean active;
-
-    @OneToMany(mappedBy = "bankAccountId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Transaction> transactions;
 
     @Builder.Default
     @Column(nullable = false)

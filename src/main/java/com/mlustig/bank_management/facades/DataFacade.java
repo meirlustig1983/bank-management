@@ -1,10 +1,12 @@
 package com.mlustig.bank_management.facades;
 
 import com.mlustig.bank_management.dao.BankAccount;
+import com.mlustig.bank_management.dao.BankAccountStatus;
 import com.mlustig.bank_management.dao.Transaction;
 import com.mlustig.bank_management.enums.BankAccountFields;
 import com.mlustig.bank_management.enums.TransactionType;
 import com.mlustig.bank_management.repositories.BankAccountRepository;
+import com.mlustig.bank_management.repositories.BankAccountStatusRepository;
 import com.mlustig.bank_management.repositories.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,9 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class DataFacade {
+
     private final BankAccountRepository bankAccountRepository;
+    private final BankAccountStatusRepository bankAccountStatusRepository;
     private final TransactionRepository transactionRepository;
 
     public List<BankAccount> findAllBankAccounts() {
@@ -28,6 +32,10 @@ public class DataFacade {
 
     public Optional<BankAccount> findBankAccountByAccountId(String accountId) {
         return bankAccountRepository.findBankAccountByAccountId(accountId);
+    }
+
+    public Optional<BankAccountStatus> findBankAccountStatusByAccountId(String accountId) {
+        return bankAccountStatusRepository.findBankAccountStatusByAccountId(accountId);
     }
 
     public Optional<BankAccount> saveBankAccount(BankAccount bankAccount) {

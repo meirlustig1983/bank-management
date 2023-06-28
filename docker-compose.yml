@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15.3-alpine
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -24,6 +24,15 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  redis:
+    image: redis:6.2.12-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   postgres_data:
   pgadmin_data:
+  redis_data:
