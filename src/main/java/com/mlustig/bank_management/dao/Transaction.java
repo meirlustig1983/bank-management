@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "transaction")
+@Table(name = "transaction",
+        indexes = {@Index(name = "account_info_user_name_idx", columnList = "userName")}
+)
 public class Transaction {
 
     @Id
@@ -29,11 +31,7 @@ public class Transaction {
             generator = "transaction_id_sequence"
     )
     @EqualsAndHashCode.Exclude
-    private Long id;
-
-    @NonNull
-    @Column(nullable = false)
-    private Long bankAccountId;
+    private Long transactionId;
 
     @NonNull
     @Column(nullable = false)
@@ -43,6 +41,10 @@ public class Transaction {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionType type;
+
+    @ManyToOne
+    @JoinColumn(name = "accountInfoId", nullable = false)
+    private AccountInfo accountInfo;
 
     @Builder.Default
     @Column(nullable = false)

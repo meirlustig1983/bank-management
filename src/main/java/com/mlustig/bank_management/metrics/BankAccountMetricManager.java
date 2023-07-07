@@ -15,18 +15,28 @@ public class BankAccountMetricManager {
 
     private final MeterRegistry meterRegistry;
 
-    private Counter getAccountInfoCounter;
+    private Counter getAccountInfoByUserNameCounter;
+    private Counter getAccountInfoByEmailCounter;
+    private Counter getAccountInfoByPhoneNumberCounter;
     private Counter createAccountCounter;
     private Counter deleteBankAccountCounter;
-    private Timer getAccountInfoTimer;
+    private Timer getAccountInfoByUserNameTimer;
+    private Timer getAccountInfoByEmailTimer;
+    private Timer getAccountInfoByPhoneNumberTimer;
     private Timer createAccountTimer;
     private Timer deleteBankAccountTimer;
 
     @PostConstruct
     public void init() {
 
-        getAccountInfoCounter = Counter.builder("bank_account_get_account_info_counter")
-                .description("Number of times getAccountInfo method has been called")
+        getAccountInfoByUserNameCounter = Counter.builder("bank_account_get_account_info_by_user_name_counter")
+                .description("Number of times getAccountInfoByUserName method has been called")
+                .register(meterRegistry);
+        getAccountInfoByEmailCounter = Counter.builder("bank_account_get_account_info_by_email_counter")
+                .description("Number of times getAccountInfoByEmail method has been called")
+                .register(meterRegistry);
+        getAccountInfoByPhoneNumberCounter = Counter.builder("bank_account_get_account_info_by_phone_number_counter")
+                .description("Number of times getAccountInfoByPhoneNumber method has been called")
                 .register(meterRegistry);
         createAccountCounter = Counter.builder("bank_account_create_account_counter")
                 .description("Number of times createAccount method has been called")
@@ -35,8 +45,14 @@ public class BankAccountMetricManager {
                 .description("Number of times deleteBankAccount method has been called")
                 .register(meterRegistry);
 
-        getAccountInfoTimer = Timer.builder("bank_account_get_account_info_timer")
-                .description("Execution time of getAccountInfo method")
+        getAccountInfoByUserNameTimer = Timer.builder("bank_account_get_account_info_by_user_name_timer")
+                .description("Execution time of getAccountInfoByUserName method")
+                .register(meterRegistry);
+        getAccountInfoByEmailTimer = Timer.builder("bank_account_get_account_info_by_email_timer")
+                .description("Execution time of getAccountInfoByEmail method")
+                .register(meterRegistry);
+        getAccountInfoByPhoneNumberTimer = Timer.builder("bank_account_get_account_info_by_phone_number_timer")
+                .description("Execution time of getAccountInfoByPhoneNumber method")
                 .register(meterRegistry);
         createAccountTimer = Timer.builder("bank_account_create_account_timer")
                 .description("Execution time of createAccount method")

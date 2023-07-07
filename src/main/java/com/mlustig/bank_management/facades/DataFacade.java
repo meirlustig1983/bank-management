@@ -1,89 +1,157 @@
 package com.mlustig.bank_management.facades;
 
-import com.mlustig.bank_management.dao.BankAccount;
-import com.mlustig.bank_management.dao.BankAccountStatus;
+import com.mlustig.bank_management.dao.AccountBalance;
+import com.mlustig.bank_management.dao.AccountInfo;
+import com.mlustig.bank_management.dao.AccountProperties;
 import com.mlustig.bank_management.dao.Transaction;
-import com.mlustig.bank_management.enums.BankAccountFields;
+import com.mlustig.bank_management.enums.AccountInfoFields;
+import com.mlustig.bank_management.enums.AccountPropertiesFields;
 import com.mlustig.bank_management.enums.TransactionType;
-import com.mlustig.bank_management.repositories.BankAccountRepository;
-import com.mlustig.bank_management.repositories.BankAccountStatusRepository;
+import com.mlustig.bank_management.repositories.AccountBalanceRepository;
+import com.mlustig.bank_management.repositories.AccountInfoRepository;
+import com.mlustig.bank_management.repositories.AccountPropertiesRepository;
 import com.mlustig.bank_management.repositories.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @Transactional
 @RequiredArgsConstructor
 public class DataFacade {
 
-    private final BankAccountRepository bankAccountRepository;
-    private final BankAccountStatusRepository bankAccountStatusRepository;
+    private final AccountBalanceRepository accountBalanceRepository;
+    private final AccountInfoRepository accountInfoRepository;
+    private final AccountPropertiesRepository accountPropertiesRepository;
     private final TransactionRepository transactionRepository;
 
-    public List<BankAccount> findAllBankAccounts() {
-        return bankAccountRepository.findAll();
+    public Optional<AccountBalance> findAccountBalanceByAccountInfoUserName(String userName) {
+        return accountBalanceRepository.findByAccountInfo_UserName(userName);
     }
 
-    public Optional<BankAccount> findBankAccountByAccountId(String accountId) {
-        return bankAccountRepository.findBankAccountByAccountId(accountId);
+    public void updateAccountBalance(String userName, BigDecimal balance) {
+        Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
+        if (accountInfo.isPresent()) {
+            AccountBalance accountBalance = AccountBalance.builder()
+                    .balance(balance)
+                    .accountInfo(accountInfo.get())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            accountBalanceRepository.save(accountBalance);
+        }
     }
 
-    public Optional<BankAccountStatus> findBankAccountStatusByAccountId(String accountId) {
-        return bankAccountStatusRepository.findBankAccountStatusByAccountId(accountId);
+    public Optional<AccountInfo> saveAccountInfo(AccountInfo accountInfo) {
+        return Optional.of(accountInfoRepository.save(accountInfo));
     }
 
-    public Optional<BankAccount> saveBankAccount(BankAccount bankAccount) {
-        return Optional.of(bankAccountRepository.save(bankAccount));
+    public Optional<AccountInfo> findAccountInfoByUserName(String userName) {
+        return accountInfoRepository.findByUserName(userName);
     }
 
-    public void saveTransaction(Long bankAccountId, BigDecimal amount, TransactionType type) {
-        Transaction transaction = Transaction.builder()
-                .bankAccountId(bankAccountId)
-                .amount(amount)
-                .type(type)
-                .build();
-        transactionRepository.save(transaction);
+    public Optional<AccountInfo> findAccountInfoByEmail(String email) {
+        return accountInfoRepository.findByEmail(email);
     }
 
-    public Optional<BankAccount> updateBankAccount(String accountId, List<Pair<BankAccountFields, String>> data) {
-        Optional<BankAccount> original = bankAccountRepository.findBankAccountByAccountId(accountId);
+    public Optional<AccountInfo> findAccountInfoByPhoneNumber(String phoneNumber) {
+        return accountInfoRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    public void deleteAccountInfoByUserName(String userName) {
+        accountInfoRepository.deleteByUserName(userName);
+    }
+
+    public void saveAccountProperties(String userName, boolean active, BigDecimal minimumBalance) {
+        Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
+        if (accountInfo.isPresent()) {
+            AccountProperties accountProperties = AccountProperties.builder()
+                    .accountInfo(accountInfo.get())
+                    .active(active)
+                    .minimumBalance(minimumBalance)
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            accountPropertiesRepository.save(accountProperties);
+        }
+    }
+
+    public Optional<AccountProperties> findAccountPropertiesByAccountInfoUserName(String userName) {
+        return accountPropertiesRepository.findByAccountInfo_UserName(userName);
+    }
+
+    public void saveTransaction(String userName, BigDecimal amount, TransactionType type) {
+        Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
+        if (accountInfo.isPresent()) {
+            Transaction transaction = Transaction.builder()
+                    .accountInfo(accountInfo.get())
+                    .amount(amount)
+                    .type(type)
+                    .build();
+            transactionRepository.save(transaction);
+        }
+    }
+
+    public Optional<AccountInfo> updateAccountInfo(String userName, List<Pair<AccountInfoFields, String>> data) {
+        Optional<AccountInfo> original = accountInfoRepository.findByUserName(userName);
         return original.map(account -> {
-            BankAccount.BankAccountBuilder builder = BankAccount.builder()
-                    .id(account.getId())
-                    .accountId(account.getAccountId())
+            AccountInfo.AccountInfoBuilder builder = AccountInfo.builder()
+                    .accountInfoId(account.getAccountInfoId())
+                    .userName(account.getUserName())
                     .firstName(account.getFirstName())
                     .lastName(account.getLastName())
-                    .balance(account.getBalance())
-                    .minimumBalance(account.getMinimumBalance())
-                    .active(account.isActive())
+                    .email(account.getEmail())
+                    .phoneNumber(account.getPhoneNumber())
+                    .updatedAt(LocalDateTime.now())
                     .createdAt(account.getCreatedAt());
 
             data.forEach(pair -> {
-                BankAccountFields field = pair.getFirst();
+                AccountInfoFields field = pair.getFirst();
                 String value = pair.getSecond();
 
                 switch (field) {
+                    case USER_NAME -> builder.userName(value);
                     case FIRST_NAME -> builder.firstName(value);
                     case LAST_NAME -> builder.lastName(value);
-                    case BALANCE -> builder.balance(new BigDecimal(value));
+                    case EMAIL -> builder.email(value);
+                    case PHONE_NUMBER -> builder.phoneNumber(value);
+                    default -> throw new IllegalArgumentException("You are unauthorized to update this field.");
+                }
+            });
+
+            AccountInfo updated = builder.build();
+            return accountInfoRepository.save(updated);
+        });
+    }
+
+    public Optional<AccountProperties> updateAccountProperties(String userName, List<Pair<AccountPropertiesFields, String>> data) {
+        Optional<AccountProperties> original = accountPropertiesRepository.findByAccountInfo_UserName(userName);
+        return original.map(properties -> {
+            AccountProperties.AccountPropertiesBuilder builder = AccountProperties.builder()
+                    .accountPropertiesId(properties.getAccountPropertiesId())
+                    .active(properties.isActive())
+                    .minimumBalance(properties.getMinimumBalance())
+                    .updatedAt(LocalDateTime.now())
+                    .createdAt(properties.getCreatedAt());
+
+            data.forEach(pair -> {
+                AccountPropertiesFields field = pair.getFirst();
+                String value = pair.getSecond();
+
+                switch (field) {
                     case MINIMUM_BALANCE -> builder.minimumBalance(new BigDecimal(value));
                     case ACTIVE -> builder.active(Boolean.parseBoolean(value));
                     default -> throw new IllegalArgumentException("You are unauthorized to update this field.");
                 }
             });
-
-            BankAccount updated = builder.build();
-            return bankAccountRepository.save(updated);
+            AccountProperties updated = builder.build();
+            return accountPropertiesRepository.save(updated);
         });
-    }
-
-    public void deleteBankAccountByAccountId(String accountId) {
-        bankAccountRepository.deleteByAccountId(accountId);
     }
 }

@@ -1,17 +1,17 @@
 package com.mlustig.bank_management.services;
 
-import com.mlustig.bank_management.dao.BankAccount;
-import com.mlustig.bank_management.dao.BankAccountStatus;
-import com.mlustig.bank_management.dto.BankAccountDto;
-import com.mlustig.bank_management.dto.BankAccountStatusDto;
-import com.mlustig.bank_management.enums.BankAccountFields;
+import com.mlustig.bank_management.dao.AccountBalance;
+import com.mlustig.bank_management.dao.AccountProperties;
+import com.mlustig.bank_management.dto.AccountBalanceDto;
+import com.mlustig.bank_management.dto.AccountPropertiesDto;
+import com.mlustig.bank_management.enums.AccountPropertiesFields;
 import com.mlustig.bank_management.enums.TransactionType;
 import com.mlustig.bank_management.exceptions.EmailValidationException;
 import com.mlustig.bank_management.exceptions.InactiveAccountException;
 import com.mlustig.bank_management.exceptions.InsufficientFundsException;
 import com.mlustig.bank_management.facades.DataFacade;
-import com.mlustig.bank_management.mappers.BankAccountMapper;
-import com.mlustig.bank_management.mappers.BankAccountStatusMapper;
+import com.mlustig.bank_management.mappers.AccountBalanceMapper;
+import com.mlustig.bank_management.mappers.AccountPropertiesMapper;
 import com.mlustig.bank_management.validators.EmailValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,100 +30,117 @@ import java.util.Optional;
 public class BankManagementService {
 
     private final DataFacade dataFacade;
-    private final BankAccountStatusMapper statusMapper;
+    private final AccountPropertiesMapper propertiesMapper;
+    private final AccountBalanceMapper balanceMapper;
 
-    public Optional<BankAccountStatusDto> activateAccount(String accountId) {
-        log.info("BankManagementService.activateAccount(accountId) - make a bank account active. accountId: {}", accountId);
-        validateAccountId(accountId);
+    public Optional<AccountPropertiesDto> activateAccount(String userName) {
+        log.info("BankManagementService.activateAccount(userName) - make a bank account active. userName: {}", userName);
+        validateUserName(userName);
 
-        Optional<BankAccountStatus> original = dataFacade.findBankAccountStatusByAccountId(accountId);
+        Optional<AccountProperties> original = dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
         if (original.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         } else if (original.get().isActive()) {
-            return Optional.of(statusMapper.toDto(original.get()));
+            return Optional.of(propertiesMapper.toDto(original.get()));
         } else {
-            return dataFacade.updateBankAccount(accountId, List.of(Pair.of(BankAccountFields.ACTIVE, "true"))).map(mapper::toDto);
+            return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.ACTIVE, "true")))
+                    .map(propertiesMapper::toDto);
         }
     }
 
-    public Optional<BankAccountStatusDto> deactivateAccount(String accountId) {
-        log.info("BankManagementService.deactivateAccount(accountId) - make a bank account inactive. accountId: {}", accountId);
-        validateAccountId(accountId);
+    public Optional<AccountPropertiesDto> deactivateAccount(String userName) {
+        log.info("BankManagementService.deactivateAccount(userName) - make a bank account inactive. userName: {}", userName);
+        validateUserName(userName);
 
-        Optional<BankAccountStatus> original = dataFacade.findBankAccountStatusByAccountId(accountId);
+        Optional<AccountProperties> original = dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
         if (original.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         } else if (!original.get().isActive()) {
-            return Optional.of(statusMapper.toDto(original.get()));
+            return Optional.of(propertiesMapper.toDto(original.get()));
         } else {
-            return dataFacade.updateBankAccount(accountId, List.of(Pair.of(BankAccountFields.ACTIVE, "false"))).map(mapper::toDto);
+            return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.ACTIVE, "true")))
+                    .map(propertiesMapper::toDto);
         }
     }
 
-    public Optional<BankAccountDto> makeDeposit(String accountId, double amount) {
-        log.info("BankManagementService.makeDeposit(accountId,amount) - make a deposit to bank account. accountId: {}, amount: {}", accountId, amount);
-        validateAccountId(accountId);
+    public Optional<AccountBalanceDto> makeDeposit(String userName, double amount) {
+        log.info("BankManagementService.makeDeposit(userName,amount) - make a deposit to bank account. userName: {}, amount: {}", userName, amount);
+        validateUserName(userName);
 
-        Optional<BankAccount> original = dataFacade.findBankAccountByAccountId(accountId);
-        validateAccountExists(original);
-        validateAccountActive(original);
+        Optional<AccountProperties> properties = dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
+        validateAccountExists(properties);
+        validateAccountActive(properties);
+        Optional<AccountBalance> balanceOptional = dataFacade.findAccountBalanceByAccountInfoUserName(userName);
 
-        BigDecimal depositAmount = BigDecimal.valueOf(amount);
-        dataFacade.saveTransaction(original.get().getId(), depositAmount, TransactionType.DEPOSIT);
-
-        return original.map(account -> {
-            BigDecimal updatedBalance = account.getBalance().add(depositAmount);
-            return updateAccountBalance(accountId, updatedBalance);
-        });
+        if (balanceOptional.isPresent()) {
+            BigDecimal depositAmount = BigDecimal.valueOf(amount);
+            dataFacade.saveTransaction(userName, depositAmount, TransactionType.DEPOSIT);
+            return balanceOptional.map(balance -> {
+                BigDecimal updatedBalance = balance.getBalance().add(depositAmount);
+                dataFacade.updateAccountBalance(userName, updatedBalance);
+                return new AccountBalanceDto(updatedBalance, LocalDateTime.now());
+            });
+        } else {
+            return Optional.empty();
+        }
     }
 
-    public Optional<BankAccountDto> makeWithdraw(String accountId, double amount) {
+    public Optional<AccountBalanceDto> makeWithdraw(String userName, double amount) {
         log.info("BankManagementService.makeWithdraw(id, amount) - make a withdraw for bank account. accountId: {}, amount: {}", accountId, amount);
-        validateAccountId(accountId);
+        validateUserName(userName);
 
-        Optional<BankAccount> original = dataFacade.findBankAccountByAccountId(accountId);
-        validateAccountExists(original);
-        validateAccountActive(original);
-        validateSufficientFunds(original, amount);
+        Optional<AccountProperties> optionalAccountProperties =
+                dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
+        validateAccountExists(optionalAccountProperties);
+        validateAccountActive(optionalAccountProperties);
+        Optional<AccountBalance> optionalAccountBalance =
+                dataFacade.findAccountBalanceByAccountInfoUserName(userName);
+        validateSufficientFunds(optionalAccountBalance, optionalAccountProperties, amount);
 
-        BigDecimal withdrawalAmount = BigDecimal.valueOf(amount);
-        dataFacade.saveTransaction(original.get().getId(), withdrawalAmount, TransactionType.WITHDRAW);
-
-        return original.map(account -> {
-            BigDecimal updatedBalance = account.getBalance().subtract(withdrawalAmount);
-            return updateAccountBalance(accountId, updatedBalance);
-        });
+        if (optionalAccountBalance.isPresent()) {
+            BigDecimal depositAmount = BigDecimal.valueOf(amount);
+            dataFacade.saveTransaction(userName, depositAmount, TransactionType.WITHDRAW);
+            return optionalAccountBalance.map(balance -> {
+                BigDecimal updatedBalance = balance.getBalance().subtract(depositAmount);
+                dataFacade.updateAccountBalance(userName, updatedBalance);
+                return new AccountBalanceDto(updatedBalance, LocalDateTime.now());
+            });
+        } else {
+            return Optional.empty();
+        }
     }
 
-    private void validateAccountId(String accountId) {
-        if (EmailValidator.isValid(accountId)) {
+    public Optional<AccountBalanceDto> getBalance(String userName) {
+        log.info("BankManagementService.getBalance(userName) - get balance. userName: {}", userName);
+        validateUserName(userName);
+        Optional<AccountBalance> balanceOptional = dataFacade.findAccountBalanceByAccountInfoUserName(userName);
+        return balanceOptional.map(balanceMapper::toDto);
+    }
+
+    private void validateUserName(String userName) {
+        if (EmailValidator.isValid(userName)) {
             throw new EmailValidationException();
         }
     }
 
-    private void validateAccountExists(Optional<BankAccount> bankAccount) {
-        if (bankAccount.isEmpty()) {
+    private void validateAccountExists(Optional<AccountProperties> accountProperties) {
+        if (accountProperties.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         }
     }
 
-    private void validateAccountActive(Optional<BankAccount> bankAccount) {
-        if (!bankAccount.get().isActive()) {
+    private void validateAccountActive(Optional<AccountProperties> accountProperties) {
+        if (!accountProperties.get().isActive()) {
             throw new InactiveAccountException();
         }
     }
 
-    private void validateSufficientFunds(Optional<BankAccount> bankAccount, double amount) {
-        double balance = bankAccount.get().getBalance().doubleValue();
-        double minimumBalance = bankAccount.get().getMinimumBalance().doubleValue();
+    private void validateSufficientFunds(Optional<AccountBalance> accountBalance,
+                                         Optional<AccountProperties> accountProperties, double amount) {
+        double balance = accountBalance.get().getBalance().doubleValue();
+        double minimumBalance = accountProperties.get().getMinimumBalance().doubleValue();
         if (balance - amount < minimumBalance) {
             throw new InsufficientFundsException();
         }
-    }
-
-    private BankAccountDto updateAccountBalance(String accountId, BigDecimal newBalance) {
-        return dataFacade.updateBankAccount(accountId, List.of(Pair.of(BankAccountFields.BALANCE, newBalance.toString())))
-                .map(mapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Failed to update bank account balance"));
     }
 }

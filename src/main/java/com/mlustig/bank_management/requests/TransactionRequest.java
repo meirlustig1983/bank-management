@@ -5,6 +5,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.NonNull;
 
 public record TransactionRequest(
-        @Email(message = "Invalid email format") @NonNull String accountId,
+        @Email(message = "Invalid email format") @NonNull String userName,
         @Positive(message = "Amount must be a positive number") double amount) {
 }
