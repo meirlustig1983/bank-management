@@ -69,13 +69,13 @@ public class DataFacade {
         accountInfoRepository.deleteByUserName(userName);
     }
 
-    public void saveAccountProperties(String userName, boolean active, BigDecimal minimumBalance) {
+    public void saveAccountProperties(String userName, boolean active, BigDecimal creditLimit) {
         Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
         if (accountInfo.isPresent()) {
             AccountProperties accountProperties = AccountProperties.builder()
                     .accountInfo(accountInfo.get())
                     .active(active)
-                    .minimumBalance(minimumBalance)
+                    .creditLimit(creditLimit)
                     .updatedAt(LocalDateTime.now())
                     .build();
             accountPropertiesRepository.save(accountProperties);
@@ -136,7 +136,7 @@ public class DataFacade {
             AccountProperties.AccountPropertiesBuilder builder = AccountProperties.builder()
                     .accountPropertiesId(properties.getAccountPropertiesId())
                     .active(properties.isActive())
-                    .minimumBalance(properties.getMinimumBalance())
+                    .creditLimit(properties.getCreditLimit())
                     .updatedAt(LocalDateTime.now())
                     .createdAt(properties.getCreatedAt());
 
@@ -145,7 +145,7 @@ public class DataFacade {
                 String value = pair.getSecond();
 
                 switch (field) {
-                    case MINIMUM_BALANCE -> builder.minimumBalance(new BigDecimal(value));
+                    case CREDIT_LIMIT -> builder.creditLimit(new BigDecimal(value));
                     case ACTIVE -> builder.active(Boolean.parseBoolean(value));
                     default -> throw new IllegalArgumentException("You are unauthorized to update this field.");
                 }

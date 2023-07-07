@@ -3,6 +3,7 @@ package com.mlustig.bank_management.controllers;
 import com.mlustig.bank_management.dto.AccountBalanceDto;
 import com.mlustig.bank_management.dto.AccountPropertiesDto;
 import com.mlustig.bank_management.metrics.BankManagementMetricManager;
+import com.mlustig.bank_management.requests.CreditLimitRequest;
 import com.mlustig.bank_management.requests.TransactionRequest;
 import com.mlustig.bank_management.services.BankManagementService;
 import jakarta.validation.Valid;
@@ -20,6 +21,15 @@ public class BankManagementController {
     private final BankManagementService service;
 
     private final BankManagementMetricManager metricManager;
+
+    @PostMapping("/credit-limit")
+    public ResponseEntity<AccountPropertiesDto> updateCredit(@Valid @RequestBody CreditLimitRequest creditLimitRequest) {
+        return metricManager.getUpdateCreditTimer().record(() -> {
+            metricManager.getUpdateCreditCounter().increment();
+            Optional<AccountPropertiesDto> activatedAccount = service.updateCreditLimit(creditLimitRequest.userName(), creditLimitRequest.amount());
+            return ResponseEntity.ok(activatedAccount.orElse(null));
+        });
+    }
 
     @PutMapping("/{userName}/activate")
     public ResponseEntity<AccountPropertiesDto> activateAccount(@PathVariable("userName") String userName) {

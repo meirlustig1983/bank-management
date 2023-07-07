@@ -33,6 +33,13 @@ public class BankManagementService {
     private final AccountPropertiesMapper propertiesMapper;
     private final AccountBalanceMapper balanceMapper;
 
+    public Optional<AccountPropertiesDto> updateCreditLimit(String userName, double creditLimit) {
+        log.info("BankManagementService.updateCreditLimit(userName) - update bank account credit limit. userName: {}, creditLimit: {}", userName, creditLimit);
+        validateUserName(userName);
+        return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.CREDIT_LIMIT, Double.toString(creditLimit))))
+                .map(propertiesMapper::toDto);
+    }
+
     public Optional<AccountPropertiesDto> activateAccount(String userName) {
         log.info("BankManagementService.activateAccount(userName) - make a bank account active. userName: {}", userName);
         validateUserName(userName);
@@ -138,7 +145,7 @@ public class BankManagementService {
     private void validateSufficientFunds(Optional<AccountBalance> accountBalance,
                                          Optional<AccountProperties> accountProperties, double amount) {
         double balance = accountBalance.get().getBalance().doubleValue();
-        double minimumBalance = accountProperties.get().getMinimumBalance().doubleValue();
+        double minimumBalance = accountProperties.get().getCreditLimit().doubleValue();
         if (balance - amount < minimumBalance) {
             throw new InsufficientFundsException();
         }

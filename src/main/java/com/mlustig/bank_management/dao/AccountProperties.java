@@ -28,7 +28,7 @@ public class AccountProperties {
     @EqualsAndHashCode.Exclude
     private Long accountPropertiesId;
 
-    private BigDecimal minimumBalance;
+    private BigDecimal creditLimit;
 
     private boolean active;
 

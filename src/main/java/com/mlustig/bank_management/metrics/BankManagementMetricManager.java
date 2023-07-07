@@ -20,11 +20,13 @@ public class BankManagementMetricManager {
     private Counter makeDepositCounter;
     private Counter makeWithdrawCounter;
     private Counter getBalanceCounter;
+    private Counter updateCreditCounter;
     private Timer activateAccountTimer;
     private Timer deactivateAccountTimer;
     private Timer makeDepositTimer;
     private Timer makeWithdrawTimer;
     private Timer getBalanceTimer;
+    private Timer updateCreditTimer;
 
     @PostConstruct
     public void init() {
@@ -43,6 +45,9 @@ public class BankManagementMetricManager {
         getBalanceCounter = Counter.builder("bank_management_get_balance_counter")
                 .description("Number of times getBalance method has been called")
                 .register(meterRegistry);
+        updateCreditCounter = Counter.builder("bank_management_update_credit_counter")
+                .description("Number of times updateCredit method has been called")
+                .register(meterRegistry);
 
         activateAccountTimer = Timer.builder("bank_management_activate_account_timer")
                 .description("Execution time of activateAccount method")
@@ -58,6 +63,9 @@ public class BankManagementMetricManager {
                 .register(meterRegistry);
         getBalanceTimer = Timer.builder("bank_management_get_balance_timer")
                 .description("Execution time of getBalance method")
+                .register(meterRegistry);
+        updateCreditTimer = Timer.builder("bank_management_update_credit_timer")
+                .description("Execution time of updateCredit method")
                 .register(meterRegistry);
 
     }

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record AccountPropertiesDto(
-        @NonNull BigDecimal minimumBalance,
+        @NonNull BigDecimal creditLimit,
         @NonNull Boolean active,
         @NonNull LocalDateTime updateAt) {
 }
