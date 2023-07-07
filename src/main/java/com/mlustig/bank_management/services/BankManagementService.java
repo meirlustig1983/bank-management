@@ -86,7 +86,7 @@ public class BankManagementService {
     }
 
     public Optional<AccountBalanceDto> makeWithdraw(String userName, double amount) {
-        log.info("BankManagementService.makeWithdraw(id, amount) - make a withdraw for bank account. accountId: {}, amount: {}", accountId, amount);
+        log.info("BankManagementService.makeWithdraw(userName, amount) - make a withdraw for bank account. accountId: {}, amount: {}", userName, amount);
         validateUserName(userName);
 
         Optional<AccountProperties> optionalAccountProperties =
