@@ -30,19 +30,19 @@ public class BankAccountController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<AccountInfoDto> getAccountInfoByEmail(@RequestParam("email") String email) {
+    public ResponseEntity<AccountInfoDto> getAccountInfoByEmail(@RequestParam("value") String value) {
         return bankAccountMetricManager.getGetAccountInfoByEmailTimer().record(() -> {
             bankAccountMetricManager.getGetAccountInfoByEmailCounter().increment();
-            Optional<AccountInfoDto> accountInfo = bankAccountService.getAccountInfoByEmail(email);
+            Optional<AccountInfoDto> accountInfo = bankAccountService.getAccountInfoByEmail(value);
             return ResponseEntity.ok(accountInfo.orElse(null));
         });
     }
 
-    @GetMapping("/phoneNumber")
-    public ResponseEntity<AccountInfoDto> getAccountInfoByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
+    @GetMapping("/phone-number")
+    public ResponseEntity<AccountInfoDto> getAccountInfoByPhoneNumber(@RequestParam("value") String value) {
         return bankAccountMetricManager.getGetAccountInfoByPhoneNumberTimer().record(() -> {
             bankAccountMetricManager.getGetAccountInfoByPhoneNumberCounter().increment();
-            Optional<AccountInfoDto> accountInfo = bankAccountService.getAccountInfoByPhoneNumber(phoneNumber);
+            Optional<AccountInfoDto> accountInfo = bankAccountService.getAccountInfoByPhoneNumber(value);
             return ResponseEntity.ok(accountInfo.orElse(null));
         });
     }
