@@ -55,11 +55,9 @@ public class AccountInfo {
     private String phoneNumber;
 
     @OneToOne(mappedBy = "accountInfo", fetch = FetchType.LAZY)
-    @Column(nullable = false, unique = true)
     private AccountBalance accountBalance;
 
     @OneToOne(mappedBy = "accountInfo", fetch = FetchType.LAZY)
-    @Column(nullable = false, unique = true)
     private AccountProperties accountProperties;
 
     @OneToMany(mappedBy = "accountInfo", fetch = FetchType.LAZY)

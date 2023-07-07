@@ -15,9 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "transaction",
-        indexes = {@Index(name = "account_info_user_name_idx", columnList = "userName")}
-)
+@Table(name = "transaction")
 public class Transaction {
 
     @Id

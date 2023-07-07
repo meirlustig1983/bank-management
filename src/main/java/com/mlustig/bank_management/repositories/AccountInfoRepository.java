@@ -15,7 +15,7 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, Long> 
     @Query("SELECT ai FROM AccountInfo ai WHERE ai.email = :email")
     Optional<AccountInfo> findByEmail(@Param("email") String email);
 
-    @Query("SELECT ai FROM AccountInfo ai WHERE ai.phoneNumber = :email")
+    @Query("SELECT ai FROM AccountInfo ai WHERE ai.phoneNumber = :phoneNumber")
     Optional<AccountInfo> findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
     @Modifying

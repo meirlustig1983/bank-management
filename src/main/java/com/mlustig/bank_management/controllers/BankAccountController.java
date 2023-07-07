@@ -29,7 +29,7 @@ public class BankAccountController {
         });
     }
 
-    @GetMapping
+    @GetMapping("/email")
     public ResponseEntity<AccountInfoDto> getAccountInfoByEmail(@RequestParam("email") String email) {
         return bankAccountMetricManager.getGetAccountInfoByEmailTimer().record(() -> {
             bankAccountMetricManager.getGetAccountInfoByEmailCounter().increment();
@@ -38,7 +38,7 @@ public class BankAccountController {
         });
     }
 
-    @GetMapping
+    @GetMapping("/phoneNumber")
     public ResponseEntity<AccountInfoDto> getAccountInfoByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
         return bankAccountMetricManager.getGetAccountInfoByPhoneNumberTimer().record(() -> {
             bankAccountMetricManager.getGetAccountInfoByPhoneNumberCounter().increment();
