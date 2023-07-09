@@ -10,11 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -38,8 +35,7 @@ public class BankAccountControllerIT {
                 "Meir",
                 "Lustig",
                 "meir.lustig@gmail.com",
-                "480-111-2233",
-                LocalDateTime.now());
+                "480-111-2233");
 
         mockMvc.perform(post("/api/v1/bank/account")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -51,7 +47,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir.lustig@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-111-2233"))
-                .andExpect(jsonPath("$.updatedAt").isString())
                 .andDo(document("{method-name}"));
     }
 
@@ -62,8 +57,7 @@ public class BankAccountControllerIT {
                 "Meir",
                 "Lustig",
                 "meir.lustig@gmail.com",
-                "480-111-2233",
-                LocalDateTime.now());
+                "480-111-2233");
         mockMvc.perform(post("/api/v1/bank/account")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountInfo)))
@@ -82,8 +76,7 @@ public class BankAccountControllerIT {
                 "Meir",
                 "Lustig",
                 "meir.lustig@gmail.com",
-                "480-111-2233",
-                LocalDateTime.now());
+                "480-111-2233");
         mockMvc.perform(post("/api/v1/bank/account")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountInfo)))
@@ -106,7 +99,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir.lustig@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-111-2233"))
-                .andExpect(jsonPath("$.updatedAt").isString())
                 .andDo(document("{method-name}"));
     }
 
@@ -121,7 +113,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir.lustig@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-111-2233"))
-                .andExpect(jsonPath("$.updatedAt").isString())
                 .andDo(document("{method-name}"));
     }
 
@@ -136,7 +127,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir.lustig@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-111-2233"))
-                .andExpect(jsonPath("$.updatedAt").isString())
                 .andDo(document("{method-name}"));
     }
 
@@ -197,42 +187,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.path").value("/api/v1/bank/account/phone-number"))
                 .andExpect(jsonPath("$.message").value("Invalid bank account"))
                 .andExpect(jsonPath("$.statusCode").value(404))
-                .andDo(document("{method-name}"));
-    }
-
-
-    @Test
-    @Order(12)
-    void deleteBankAccountWithWrongFormatUserName() throws Exception {
-        mockMvc.perform(delete("/api/v1/bank/account/{userName}", "meir.lustiggmail.com"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.path").value("/api/v1/bank/account/meir.lustiggmail.com"))
-                .andExpect(jsonPath("$.message").value("Wrong format exception"))
-                .andExpect(jsonPath("$.statusCode").value(400))
-                .andDo(document("{method-name}"));
-    }
-
-    @Test
-    @Order(13)
-    void deleteBankAccount() throws Exception {
-        mockMvc.perform(delete("/api/v1/bank/account/{userName}", "meir.lustig@gmail.com"))
-                .andExpect(status().isNoContent())
-                .andDo(document("{method-name}"));
-
-        mockMvc.perform(get("/api/v1/bank/account/{userName}", "meir.lustig@gmail.com"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.path").value("/api/v1/bank/account/meir.lustig@gmail.com"))
-                .andExpect(jsonPath("$.message").value("Invalid bank account"))
-                .andExpect(jsonPath("$.statusCode").value(404));
-    }
-
-    @Test
-    @Order(14)
-    void deleteBankAccountWithNotExistsAccountId() throws Exception {
-        mockMvc.perform(delete("/api/v1/bank/account/{userName}", "meir.lustig@gmail.com"))
-                .andExpect(status().isNoContent())
                 .andDo(document("{method-name}"));
     }
 }

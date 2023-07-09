@@ -7,6 +7,5 @@ import java.time.LocalDateTime;
 
 public record AccountPropertiesDto(
         @NonNull BigDecimal creditLimit,
-        @NonNull Boolean active,
-        @NonNull LocalDateTime updateAt) {
+        @NonNull Boolean active) {
 }

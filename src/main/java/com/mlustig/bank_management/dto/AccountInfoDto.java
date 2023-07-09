@@ -10,6 +10,5 @@ public record AccountInfoDto(
         @NonNull String firstName,
         @NonNull String lastName,
         @Email(message = "Invalid email format") @NonNull String email,
-        @NonNull String phoneNumber,
-        @NonNull LocalDateTime updatedAt) {
+        @NonNull String phoneNumber) {
 }

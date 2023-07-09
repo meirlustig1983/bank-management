@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Slf4j
@@ -59,13 +60,9 @@ public class BankAccountService {
         if (bankAccount.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         }
+        dataFacade.saveAccountProperties(accountInfoDto.userName(), false, BigDecimal.ZERO);
+        dataFacade.saveAccountBalance(accountInfoDto.userName(), BigDecimal.ZERO);
         return bankAccount.map(mapper::toDto);
-    }
-
-    public void deleteBankAccountByUserName(String userName) {
-        log.info("BankAccountService.deleteBankAccountByUserName(userName) - delete bank account. userName: {}", userName);
-        validateUserName(userName);
-        dataFacade.deleteAccountInfoByUserName(userName);
     }
 
     private void validateUserName(String userName) {

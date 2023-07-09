@@ -15,5 +15,6 @@ public interface AccountPropertiesMapper {
     @Mapping(target = "accountPropertiesId", ignore = true)
     @Mapping(target = "accountInfo", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     AccountProperties toDao(AccountPropertiesDto accountPropertiesDto);
 }

@@ -4,8 +4,6 @@ import com.mlustig.bank_management.dao.AccountBalance;
 import com.mlustig.bank_management.dao.AccountInfo;
 import com.mlustig.bank_management.dao.AccountProperties;
 import com.mlustig.bank_management.dao.Transaction;
-import com.mlustig.bank_management.enums.AccountInfoFields;
-import com.mlustig.bank_management.enums.AccountPropertiesFields;
 import com.mlustig.bank_management.enums.TransactionType;
 import com.mlustig.bank_management.repositories.AccountBalanceRepository;
 import com.mlustig.bank_management.repositories.AccountInfoRepository;
@@ -14,12 +12,10 @@ import com.mlustig.bank_management.repositories.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -37,7 +33,7 @@ public class DataFacade {
         return accountBalanceRepository.findByAccountInfo_UserName(userName);
     }
 
-    public void updateAccountBalance(String userName, BigDecimal balance) {
+    public void createAccountBalance(String userName, BigDecimal balance) {
         Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
         if (accountInfo.isPresent()) {
             AccountBalance accountBalance = AccountBalance.builder()
@@ -47,6 +43,10 @@ public class DataFacade {
                     .build();
             accountBalanceRepository.save(accountBalance);
         }
+    }
+
+    public int updateAccountBalance(String userName, BigDecimal balance) {
+        return accountBalanceRepository.updateBalanceByUserName(userName, balance);
     }
 
     public Optional<AccountInfo> saveAccountInfo(AccountInfo accountInfo) {
@@ -82,6 +82,18 @@ public class DataFacade {
         }
     }
 
+    public void saveAccountBalance(String userName, BigDecimal balance) {
+        Optional<AccountInfo> accountInfo = accountInfoRepository.findByUserName(userName);
+        if (accountInfo.isPresent()) {
+            AccountBalance accountBalance = AccountBalance.builder()
+                    .accountInfo(accountInfo.get())
+                    .balance(balance)
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            accountBalanceRepository.save(accountBalance);
+        }
+    }
+
     public Optional<AccountProperties> findAccountPropertiesByAccountInfoUserName(String userName) {
         return accountPropertiesRepository.findByAccountInfo_UserName(userName);
     }
@@ -98,60 +110,11 @@ public class DataFacade {
         }
     }
 
-    public Optional<AccountInfo> updateAccountInfo(String userName, List<Pair<AccountInfoFields, String>> data) {
-        Optional<AccountInfo> original = accountInfoRepository.findByUserName(userName);
-        return original.map(account -> {
-            AccountInfo.AccountInfoBuilder builder = AccountInfo.builder()
-                    .accountInfoId(account.getAccountInfoId())
-                    .userName(account.getUserName())
-                    .firstName(account.getFirstName())
-                    .lastName(account.getLastName())
-                    .email(account.getEmail())
-                    .phoneNumber(account.getPhoneNumber())
-                    .updatedAt(LocalDateTime.now())
-                    .createdAt(account.getCreatedAt());
-
-            data.forEach(pair -> {
-                AccountInfoFields field = pair.getFirst();
-                String value = pair.getSecond();
-
-                switch (field) {
-                    case USER_NAME -> builder.userName(value);
-                    case FIRST_NAME -> builder.firstName(value);
-                    case LAST_NAME -> builder.lastName(value);
-                    case EMAIL -> builder.email(value);
-                    case PHONE_NUMBER -> builder.phoneNumber(value);
-                    default -> throw new IllegalArgumentException("You are unauthorized to update this field.");
-                }
-            });
-
-            AccountInfo updated = builder.build();
-            return accountInfoRepository.save(updated);
-        });
+    public int updateAccountPropertiesActiveStatus(String userName, boolean active) {
+        return accountPropertiesRepository.updateActiveStatusByUserName(userName, active);
     }
 
-    public Optional<AccountProperties> updateAccountProperties(String userName, List<Pair<AccountPropertiesFields, String>> data) {
-        Optional<AccountProperties> original = accountPropertiesRepository.findByAccountInfo_UserName(userName);
-        return original.map(properties -> {
-            AccountProperties.AccountPropertiesBuilder builder = AccountProperties.builder()
-                    .accountPropertiesId(properties.getAccountPropertiesId())
-                    .active(properties.isActive())
-                    .creditLimit(properties.getCreditLimit())
-                    .updatedAt(LocalDateTime.now())
-                    .createdAt(properties.getCreatedAt());
-
-            data.forEach(pair -> {
-                AccountPropertiesFields field = pair.getFirst();
-                String value = pair.getSecond();
-
-                switch (field) {
-                    case CREDIT_LIMIT -> builder.creditLimit(new BigDecimal(value));
-                    case ACTIVE -> builder.active(Boolean.parseBoolean(value));
-                    default -> throw new IllegalArgumentException("You are unauthorized to update this field.");
-                }
-            });
-            AccountProperties updated = builder.build();
-            return accountPropertiesRepository.save(updated);
-        });
+    public int updateAccountPropertiesCreditLimit(String userName, BigDecimal creditLimit) {
+        return accountPropertiesRepository.updateCreditLimitByUserName(userName, creditLimit);
     }
 }

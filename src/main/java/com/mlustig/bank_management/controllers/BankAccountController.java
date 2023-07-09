@@ -56,13 +56,4 @@ public class BankAccountController {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid bank account data"));
         });
     }
-
-    @DeleteMapping("/{userName}")
-    public ResponseEntity<Void> deleteBankAccount(@PathVariable("userName") String userName) {
-        return bankAccountMetricManager.getDeleteBankAccountTimer().record(() -> {
-            bankAccountMetricManager.getDeleteBankAccountCounter().increment();
-            bankAccountService.deleteBankAccountByUserName(userName);
-            return ResponseEntity.noContent().build();
-        });
-    }
 }

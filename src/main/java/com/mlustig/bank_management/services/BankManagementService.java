@@ -4,7 +4,6 @@ import com.mlustig.bank_management.dao.AccountBalance;
 import com.mlustig.bank_management.dao.AccountProperties;
 import com.mlustig.bank_management.dto.AccountBalanceDto;
 import com.mlustig.bank_management.dto.AccountPropertiesDto;
-import com.mlustig.bank_management.enums.AccountPropertiesFields;
 import com.mlustig.bank_management.enums.TransactionType;
 import com.mlustig.bank_management.exceptions.EmailValidationException;
 import com.mlustig.bank_management.exceptions.InactiveAccountException;
@@ -16,12 +15,10 @@ import com.mlustig.bank_management.validators.EmailValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -36,37 +33,44 @@ public class BankManagementService {
     public Optional<AccountPropertiesDto> updateCreditLimit(String userName, double creditLimit) {
         log.info("BankManagementService.updateCreditLimit(userName) - update bank account credit limit. userName: {}, creditLimit: {}", userName, creditLimit);
         validateUserName(userName);
-        return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.CREDIT_LIMIT, Double.toString(creditLimit))))
-                .map(propertiesMapper::toDto);
+        if (dataFacade.updateAccountPropertiesCreditLimit(userName, BigDecimal.valueOf(creditLimit)) > 0) {
+            return dataFacade.findAccountPropertiesByAccountInfoUserName(userName).map(propertiesMapper::toDto);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<AccountPropertiesDto> activateAccount(String userName) {
         log.info("BankManagementService.activateAccount(userName) - make a bank account active. userName: {}", userName);
         validateUserName(userName);
-
         Optional<AccountProperties> original = dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
         if (original.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         } else if (original.get().isActive()) {
             return Optional.of(propertiesMapper.toDto(original.get()));
         } else {
-            return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.ACTIVE, "true")))
-                    .map(propertiesMapper::toDto);
+            if (dataFacade.updateAccountPropertiesActiveStatus(userName, true) > 0) {
+                return Optional.of(new AccountPropertiesDto(original.get().getCreditLimit(), true));
+            } else {
+                return Optional.empty();
+            }
         }
     }
 
     public Optional<AccountPropertiesDto> deactivateAccount(String userName) {
         log.info("BankManagementService.deactivateAccount(userName) - make a bank account inactive. userName: {}", userName);
         validateUserName(userName);
-
         Optional<AccountProperties> original = dataFacade.findAccountPropertiesByAccountInfoUserName(userName);
         if (original.isEmpty()) {
             throw new EntityNotFoundException("Invalid bank account");
         } else if (!original.get().isActive()) {
             return Optional.of(propertiesMapper.toDto(original.get()));
         } else {
-            return dataFacade.updateAccountProperties(userName, List.of(Pair.of(AccountPropertiesFields.ACTIVE, "true")))
-                    .map(propertiesMapper::toDto);
+            if (dataFacade.updateAccountPropertiesActiveStatus(userName, false) > 0) {
+                return Optional.of(new AccountPropertiesDto(original.get().getCreditLimit(), false));
+            } else {
+                return Optional.empty();
+            }
         }
     }
 
@@ -93,7 +97,7 @@ public class BankManagementService {
     }
 
     public Optional<AccountBalanceDto> makeWithdraw(String userName, double amount) {
-        log.info("BankManagementService.makeWithdraw(userName, amount) - make a withdraw for bank account. accountId: {}, amount: {}", userName, amount);
+        log.info("BankManagementService.makeWithdraw(userName, amount) - make a withdraw for bank account. userName: {}, amount: {}", userName, amount);
         validateUserName(userName);
 
         Optional<AccountProperties> optionalAccountProperties =
@@ -109,8 +113,11 @@ public class BankManagementService {
             dataFacade.saveTransaction(userName, depositAmount, TransactionType.WITHDRAW);
             return optionalAccountBalance.map(balance -> {
                 BigDecimal updatedBalance = balance.getBalance().subtract(depositAmount);
-                dataFacade.updateAccountBalance(userName, updatedBalance);
-                return new AccountBalanceDto(updatedBalance, LocalDateTime.now());
+                if (dataFacade.updateAccountBalance(userName, updatedBalance) > 0) {
+                    return new AccountBalanceDto(updatedBalance, LocalDateTime.now());
+                } else {
+                    return null;
+                }
             });
         } else {
             return Optional.empty();

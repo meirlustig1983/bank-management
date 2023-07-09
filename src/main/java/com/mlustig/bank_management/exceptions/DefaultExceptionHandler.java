@@ -47,7 +47,7 @@ public class DefaultExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         log.error("Unhandled exception occurred. ", e);
-        String fieldName = e.getMessage().contains("accountId") ? "accountId" : "amount";
+        String fieldName = e.getMessage().contains("userName") ? "userName" : "amount";
         String errorMessage = "Request validation exception [" + "field: " + fieldName + "]";
         return createApiError(request, errorMessage, HttpStatus.BAD_REQUEST.value());
     }
