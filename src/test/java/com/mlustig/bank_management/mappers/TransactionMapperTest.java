@@ -15,8 +15,7 @@ public class TransactionMapperTest {
     public void testToDto() {
         // Create a Transaction object for testing
         Transaction transaction = Transaction.builder()
-                .id(1L)
-                .bankAccountId(123L)
+                .transactionId(1L)
                 .amount(BigDecimal.valueOf(100.00))
                 .type(TransactionType.DEPOSIT)
                 .createdAt(LocalDateTime.now())
